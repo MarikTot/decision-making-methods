@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "54943535d9495d5a4f509846730d6cf3",
+    "content-hash": "06e3272e0e6e7f65eef9d406d98859c7",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -4295,16 +4295,16 @@
         },
         {
             "name": "symfony/messenger",
-            "version": "v6.2.7",
+            "version": "v6.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/messenger.git",
-                "reference": "5ca618865eb726354e5369dda38770af1a8a8331"
+                "reference": "f54eef78d500309bbc51291f8a353b4b0afef8c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/messenger/zipball/5ca618865eb726354e5369dda38770af1a8a8331",
-                "reference": "5ca618865eb726354e5369dda38770af1a8a8331",
+                "url": "https://api.github.com/repos/symfony/messenger/zipball/f54eef78d500309bbc51291f8a353b4b0afef8c1",
+                "reference": "f54eef78d500309bbc51291f8a353b4b0afef8c1",
                 "shasum": ""
             },
             "require": {
@@ -4362,7 +4362,7 @@
             "description": "Helps applications send and receive messages to/from other applications or via message queues",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/messenger/tree/v6.2.7"
+                "source": "https://github.com/symfony/messenger/tree/v6.2.8"
             },
             "funding": [
                 {
@@ -4378,7 +4378,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-16T09:57:23+00:00"
+            "time": "2023-03-14T15:00:05+00:00"
         },
         {
             "name": "symfony/mime",
@@ -9802,10 +9802,10 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.1",
+        "php": "8.2.*",
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
