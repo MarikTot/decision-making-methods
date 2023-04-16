@@ -3,11 +3,14 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Matrix;
+use App\Enum\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted(UserRole::USER)]
 class MatrixCrudController extends BaseCrudController
 {
     public static function getEntityFqcn(): string
@@ -35,9 +38,9 @@ class MatrixCrudController extends BaseCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            AssociationField::new('alternative', 'Альтернативы'),
-            AssociationField::new('characteristic', 'Показатели'),
-            AssociationField::new('task', 'Задачи'),
+            AssociationField::new('alternative', 'Альтернатива'),
+            AssociationField::new('characteristic', 'Показатель'),
+            AssociationField::new('task', 'Задача'),
         ];
     }
 }
