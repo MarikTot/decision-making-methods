@@ -26,74 +26,61 @@
 
     {% include '@EasyAdmin/flash_messages.html.twig' %}
 
-    <div class="login-wrapper">
-        <header class="main-header">
-            <div id="header-logo">
-                {% block header_logo %}
-                    {% if page_title %}
-                        {% if ea is defined %}
-                            <a class="logo {{ page_title|length > 14 ? 'logo-long' }}" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                {{ page_title|raw }}
-                            </a>
-                        {% else %}
-                            <div class="logo {{ page_title|length > 14 ? 'logo-long' }}">
-                                {{ page_title|raw }}
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                {% endblock header_logo %}
-            </div>
-        </header>
 
-        <section class="content">
+        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+            <div class="bg-light p-5 w-50">
+                <h1 class="text-center mb-2">Авторизация</h1>
 
-            {% if error|default(false) %}
-                <div class="w-100 alert alert-danger rounded mb-3">
-                    <i class="fas fa-times-circle mr-1"></i>
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
-
-            <form method="post" action="{{ action|default('') }}">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(ea is defined ? path(ea.dashboardRouteName) : '/') }}" />
-
-                <div class="form-group">
-                    <label class="form-control-label required" for="username">{{ _username_label }}</label>
-                    <div class="form-widget">
-                        <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-control-label required" for="password">{{ _password_label }}</label>
-                    <div class="form-widget">
-                        <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
-                    </div>
-
-                    {% if forgot_password_enabled|default(false) %}
-                        <div class="form-text">
-                            <a href="{{ forgot_password_path|default('#') }}">{{ _forgot_password_label }}</a>
+                    {% if error|default(false) %}
+                        <div class="w-100 alert alert-danger rounded mb-3">
+                            <i class="fas fa-times-circle mr-1"></i>
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
                         </div>
                     {% endif %}
-                </div>
 
-                {% if remember_me_enabled|default(false) %}
+                <form method="post" action="{{ action|default('') }}">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <input type="hidden" name="{{ target_path_parameter|default('_target_path') }}" value="{{ target_path|default(ea is defined ? path(ea.dashboardRouteName) : '/') }}" />
+
                     <div class="form-group">
-                        <input class="form-check-input" type="checkbox" id="remember_me" name="{{ remember_me_parameter|default('_remember_me') }}" {{ remember_me_checked|default(false) ? 'checked' }}>
-                        <label class="form-check-label" for="remember_me">
-                            {{ _remember_me_label }}
-                        </label>
+                        <label class="form-control-label required" for="username">{{ _username_label }}</label>
+                        <input type="text" id="username" name="{{ username_parameter|default('_username') }}" class="form-control" value="{{ last_username|default('') }}" required autofocus autocomplete="username">
                     </div>
-                {% endif %}
 
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">{{ _sign_in_label }}</button>
+                    <div class="form-group">
+                        <label class="form-control-label required" for="password">{{ _password_label }}</label>
+                        <input type="password" id="password" name="{{ password_parameter|default('_password') }}" class="form-control" required autocomplete="current-password">
+
+                        {% if forgot_password_enabled|default(false) %}
+                            <div class="form-text">
+                                <a href="{{ forgot_password_path|default('#') }}">{{ _forgot_password_label }}</a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if remember_me_enabled|default(false) %}
+                        <div class="form-group">
+                            <input class="form-check-input" type="checkbox" id="remember_me" name="{{ remember_me_parameter|default('_remember_me') }}" {{ remember_me_checked|default(false) ? 'checked' }}>
+                            <label class="form-check-label" for="remember_me">
+                                {{ _remember_me_label }}
+                            </label>
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                            {{ _sign_in_label }}
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center text-muted mt-5">
+                    Еще не зарегистрированы?
+                    <a href="/register" class="fw-bold text-body"><u>Зарегистрироваться</u></a>
                 </div>
-            </form>
 
-            <script src="{{ asset('login.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
-        </section>
-    </div>
+                <script src="{{ asset('login.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
+            </div>
+        </div>
 {% endblock %}

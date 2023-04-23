@@ -16,9 +16,6 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email', null, [
-                'attr' => [
-                    'class' => 'form-control',
-                ],
                 'label_attr' => [
                     'class' => 'form-control-label required',
                 ],
@@ -41,15 +38,14 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'attr' => [
                     'autocomplete' => 'new-password',
-                    'class' => 'form-control',
                 ],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => 'Введите пароль',
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'minMessage' => 'Ваш пароль должен содержать не менее {{ limit }} символов',
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
