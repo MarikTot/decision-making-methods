@@ -20,6 +20,10 @@ class Characteristic
     #[ORM\Column]
     private ?bool $multiple = null;
 
+    #[ORM\ManyToOne(inversedBy: 'characteristics')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?CharacteristicType $type = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +49,18 @@ class Characteristic
     public function setMultiple(bool $multiple): self
     {
         $this->multiple = $multiple;
+
+        return $this;
+    }
+
+    public function getType(): ?CharacteristicType
+    {
+        return $this->type;
+    }
+
+    public function setType(?CharacteristicType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

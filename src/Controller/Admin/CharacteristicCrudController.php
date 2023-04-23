@@ -6,6 +6,7 @@ use App\Entity\Characteristic;
 use App\Enum\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -42,6 +43,7 @@ class CharacteristicCrudController extends BaseCrudController
             TextField::new('name', 'Название'),
             BooleanField::new('multiple', 'Может содержать несколько значений')
                 ->renderAsSwitch(false),
+            AssociationField::new('type', 'Тип'),
         ];
     }
 }

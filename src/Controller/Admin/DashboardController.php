@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Alternative;
 use App\Entity\Characteristic;
+use App\Entity\CharacteristicType;
+use App\Entity\CharacteristicTypeEnum;
 use App\Entity\Matrix;
 use App\Entity\Task;
 use App\Entity\User;
@@ -49,6 +51,14 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Основное', 'fa fa-list')
             ->setPermission(UserRole::ADMIN)
+        ;
+
+        yield MenuItem::linkToCrud('Типы', 'fa fa-alt', CharacteristicType::class)
+            ->setPermission(UserRole::USER)
+        ;
+
+        yield MenuItem::linkToCrud('Значения типов', 'fa fa-alt', CharacteristicTypeEnum::class)
+            ->setPermission(UserRole::USER)
         ;
 
         yield MenuItem::linkToCrud('Альтернативы', 'fa fa-alt', Alternative::class)

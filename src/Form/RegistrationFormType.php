@@ -16,6 +16,9 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email', null, [
+                'attr' => [
+                    'class' => 'form-control',
+                ],
                 'label_attr' => [
                     'class' => 'form-control-label required',
                 ],
@@ -38,6 +41,7 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'attr' => [
                     'autocomplete' => 'new-password',
+                    'class' => 'form-control',
                 ],
                 'constraints' => [
                     new NotBlank([
