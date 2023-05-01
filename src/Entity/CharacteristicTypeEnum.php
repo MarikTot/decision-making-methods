@@ -48,4 +48,9 @@ class CharacteristicTypeEnum
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
+    }
 }

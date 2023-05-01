@@ -6,7 +6,7 @@ use App\Entity\CharacteristicType;
 use App\Enum\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -38,10 +38,8 @@ class CharacteristicTypeCrudController extends BaseCrudController
     {
         return [
             TextField::new('name', 'Название'),
-            BooleanField::new('defaultType', 'По умолчанию')
-                ->renderAsSwitch(false)
-                ->hideOnForm()
-            ,
+            AssociationField::new('characteristicTypeEnums', 'Варианты значения')
+                ->setTemplatePath('admin/field/CharacteristicType/characteristic-type-enums.html.twig')
         ];
     }
 }
