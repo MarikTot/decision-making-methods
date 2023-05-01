@@ -2,7 +2,7 @@ FROM php:8-alpine
 
 WORKDIR /app
 
-RUN set -ex && apk --no-cache add postgresql-dev libsodium-dev librdkafka-dev git autoconf gcc g++ make bash curl-dev libtool \
+RUN set -ex && apk --no-cache add postgresql-dev libsodium-dev librdkafka-dev git autoconf gcc g++ make bash curl-dev libtool nodejs npm \
     && pecl install rdkafka-5.0.2 \
     && docker-php-ext-enable rdkafka \
     && docker-php-ext-install pdo pdo_pgsql
