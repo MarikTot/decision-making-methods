@@ -5,8 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use App\Enum\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(UserRole::ADMIN)]
@@ -21,7 +21,7 @@ class UserCrudController extends BaseCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            EmailField::new('email', 'Email'),
+            TextField::new('username', 'Username'),
             ChoiceField::new('roles', 'Роли')
                 ->setChoices([
                     'Пользователь' => UserRole::USER,
@@ -32,9 +32,6 @@ class UserCrudController extends BaseCrudController
                 ->allowMultipleChoices()
                 ->renderAsBadges()
                 ->autocomplete()
-//                ->setFormattedValue(function ($value, $entity) {
-//                    dd($value, $entity);
-//                })
             ,
         ];
     }

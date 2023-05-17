@@ -17,7 +17,7 @@
 
 {% block wrapper_wrapper %}
     {% set page_title = block('page_title') %}
-    {% set _username_label = 'Email' %}
+    {% set _username_label = 'Username' %}
     {% set _password_label = 'Пароль' %}
     {% set _forgot_password_label = forgot_password_label is defined ? forgot_password_label|trans : 'login_page.forgot_password'|trans({}, 'EasyAdminBundle') %}
     {% set _remember_me_label = remember_me_label is defined ? remember_me_label|trans : 'login_page.remember_me'|trans({}, 'EasyAdminBundle') %}

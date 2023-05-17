@@ -6,7 +6,8 @@ use App\Entity\Alternative;
 use App\Entity\Characteristic;
 use App\Entity\CharacteristicType;
 use App\Entity\CharacteristicTypeEnum;
-use App\Entity\Matrix;
+use App\Entity\MatrixCell;
+use App\Entity\MatrixValue;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Enum\UserRole;
@@ -70,9 +71,9 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Задачи', 'fa fa-alt', Task::class)
             ->setPermission(UserRole::USER)
         ;
-        yield MenuItem::linkToCrud('Матрицы', 'fa fa-alt', Matrix::class)
-            ->setPermission(UserRole::USER)
-        ;
+//        yield MenuItem::linkToRoute('Матрицы 2.0', 'fa fa-alt', 'matrix')
+//            ->setPermission(UserRole::USER)
+//        ;
 
         yield MenuItem::section('Администрирование', 'fa fa-gear')
             ->setPermission(UserRole::ADMIN)

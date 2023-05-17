@@ -6,6 +6,7 @@ use App\Entity\Task;
 use App\Enum\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -40,6 +41,7 @@ class TaskCrudController extends BaseCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('title', 'Название'),
+            AssociationField::new('matrices', 'Матрицы'),
             TextEditorField::new('description', 'Описание'),
         ];
     }
