@@ -46,6 +46,7 @@ class FillDefaultDataCommand extends Command
         $data = [
             'Число' => [],
             'Строка' => [],
+            'С плавающей точкой' => [],
             'Да/Нет' => [
                 'Да',
                 'Нет',

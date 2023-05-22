@@ -6,26 +6,32 @@ use App\Repository\MatrixCellRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[UniqueEntity(
+    fields: ['alternative', 'characteristic', 'matrix'],
+    message: 'Такая ячейка уже есть',
+)]
+#[ORM\Index(columns: ['matrix_id', 'alternative_id', 'characteristic_id'], name: 'matrix_alternative_characteristic_idx')]
 #[ORM\Entity(repositoryClass: MatrixCellRepository::class)]
 class MatrixCell
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Alternative $alternative = null;
+    private Alternative $alternative;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Characteristic $characteristic = null;
+    private Characteristic $characteristic;
 
     #[ORM\ManyToOne(inversedBy: 'matrixCells')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Matrix $matrix = null;
+    private Matrix $matrix;
 
     #[ORM\OneToMany(mappedBy: 'matrixCell', targetEntity: MatrixCellValue::class, orphanRemoval: true)]
     private Collection $matrixCellValues;
@@ -35,41 +41,41 @@ class MatrixCell
         $this->matrixCellValues = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getAlternative(): ?Alternative
+    public function getAlternative(): Alternative
     {
         return $this->alternative;
     }
 
-    public function setAlternative(?Alternative $alternative): self
+    public function setAlternative(Alternative $alternative): self
     {
         $this->alternative = $alternative;
 
         return $this;
     }
 
-    public function getCharacteristic(): ?Characteristic
+    public function getCharacteristic(): Characteristic
     {
         return $this->characteristic;
     }
 
-    public function setCharacteristic(?Characteristic $characteristic): self
+    public function setCharacteristic(Characteristic $characteristic): self
     {
         $this->characteristic = $characteristic;
 
         return $this;
     }
 
-    public function getMatrix(): ?Matrix
+    public function getMatrix(): Matrix
     {
         return $this->matrix;
     }
 
-    public function setMatrix(?Matrix $matrix): self
+    public function setMatrix(Matrix $matrix): self
     {
         $this->matrix = $matrix;
 

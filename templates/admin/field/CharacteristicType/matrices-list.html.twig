@@ -1,0 +1,7 @@
+{% for value in field.value %}
+    <span class="badge badge-primary">{{ value.id }}</span>
+{% else %}
+    <span class="badge badge-danger">
+        Список пуст
+    </span>
+{% endfor %}

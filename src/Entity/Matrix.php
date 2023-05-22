@@ -6,6 +6,7 @@ use App\Repository\MatrixRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 
 #[ORM\Entity(repositoryClass: MatrixRepository::class)]
 class Matrix
@@ -13,7 +14,7 @@ class Matrix
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'matrices')]
     private ?Task $task = null;
@@ -38,7 +39,7 @@ class Matrix
         $this->matrixCells = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -161,5 +162,10 @@ class Matrix
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s(%s)', $this->getId(), $this->getTask()->getTitle());
     }
 }

@@ -2,19 +2,28 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Matrix;
 use App\Entity\Task;
 use App\Enum\UserRole;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(UserRole::USER)]
 class TaskCrudController extends BaseCrudController
 {
+    public function __construct(
+        private AdminUrlGenerator $adminUrlGenerator,
+    ) {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Task::class;
@@ -36,13 +45,44 @@ class TaskCrudController extends BaseCrudController
         ;
     }
 
+    public function configureActions(Actions $actions): Actions
+    {
+        $actions = parent::configureActions($actions);
+
+        $newMatrix = Action::new('newMatrix', 'Создать матрицу', 'fa fa-plus')
+            ->linkToRoute('matrix_new', function (Task $task) {
+                return [
+                    'task' => $task->getId(),
+                ];
+            })
+        ;
+
+        return $actions
+            ->add(Crud::PAGE_INDEX, $newMatrix)
+        ;
+    }
+
     public function configureFields(string $pageName): iterable
     {
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('title', 'Название'),
-            AssociationField::new('matrices', 'Матрицы'),
-            TextEditorField::new('description', 'Описание'),
+            TextareaField::new('description', 'Описание'),
+            AssociationField::new('matrices', 'Матрицы')
+//                ->setTemplatePath('admin/field/CharacteristicType/matrices-list.html.twig')
+                ->formatValue(function (int $count, Task $task) {
+                    $links = [];
+                    /** @var Matrix $matrix */
+                    foreach ($task->getMatrices() as $matrix) {
+                        $url = $this->adminUrlGenerator->setRoute('matrix_edit', [
+                            'matrix' => $matrix->getId(),
+                        ])->generateUrl();
+                        $links[] = sprintf('<a href="%s">%s</a>', $url, $matrix->getId());
+                    }
+
+                    return implode(', ', $links);
+                })
+                ->onlyOnIndex(),
         ];
     }
 }
