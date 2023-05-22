@@ -24,7 +24,7 @@ export default {
   props: ['cell'],
   data() {
     return {
-      'selected': this.cell.value || this.cell.characteristic.type.enum[0] || null,
+      'selected': this.cell.value || (this.cell.characteristic.type.enum ? this.cell.characteristic.type.enum[0] : null) || null,
     };
   },
   methods: {
