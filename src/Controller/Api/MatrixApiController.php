@@ -38,6 +38,24 @@ class MatrixApiController extends BaseApiController
     }
 
     #[Route(
+        path: '/remove-alternative',
+        name: 'remove-alternative',
+        methods: [Request::METHOD_POST],
+    )]
+    public function removeAlternative(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $this->matrixService->removeAlternative($data['id'], $data['alternativeId']);
+
+        return $this->response(
+            data: [
+                'success' => true,
+            ],
+        );
+    }
+
+    #[Route(
         path: '/add-characteristic',
         name: 'add-characteristic',
         methods: [Request::METHOD_POST],
@@ -52,6 +70,24 @@ class MatrixApiController extends BaseApiController
             data: [
                 'cells' => array_map(fn (MatrixCell $cell) => (new MatrixCellDto($cell))->toArray(), $dto->getCells()),
                 'characteristic' => (new CharacteristicDto($dto->getCharacteristic()))->toArray(),
+            ],
+        );
+    }
+
+    #[Route(
+        path: '/remove-characteristic',
+        name: 'remove-characteristic',
+        methods: [Request::METHOD_POST],
+    )]
+    public function removeCharacteristic(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $this->matrixService->removeCharacteristic($data['id'], $data['characteristicId']);
+
+        return $this->response(
+            data: [
+                'success' => true,
             ],
         );
     }

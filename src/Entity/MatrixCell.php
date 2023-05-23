@@ -21,13 +21,22 @@ class MatrixCell
     #[ORM\Column]
     private int $id;
 
+    #[ORM\Column(name: 'alternative_id')]
+    private int $alternativeId;
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private Alternative $alternative;
 
+    #[ORM\Column(name: 'characteristic_id')]
+    private int $characteristicId;
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private Characteristic $characteristic;
+
+    #[ORM\Column(name: 'matrix_id')]
+    private int $matrixId;
 
     #[ORM\ManyToOne(inversedBy: 'matrixCells')]
     #[ORM\JoinColumn(nullable: false)]

@@ -150,4 +150,60 @@ class MatrixService
 
         $this->em->flush();
     }
+
+    public function removeAlternative(int $id, int $alternativeId): void
+    {
+        $matrix = $this->findOrThrowMatrix($id);
+
+        /** @var Alternative $alternative */
+        foreach ($matrix->getAlternatives() as $alternative) {
+            if ($alternativeId === $alternative->getId()) {
+                $matrix->removeAlternative($alternative);
+                break;
+            }
+        }
+
+        $cells = $this->cells->findBy([
+            'matrixId' => $matrix->getId(),
+            'alternativeId' => $alternativeId,
+        ]);
+
+        foreach ($cells as $cell) {
+            /** @var MatrixCellValue $value */
+            foreach ($cell->getMatrixCellValues() as $value) {
+                $this->em->remove($value);
+            }
+            $this->em->remove($cell);
+        }
+
+        $this->em->flush();
+    }
+
+    public function removeCharacteristic(int $id, int $characteristicId): void
+    {
+        $matrix = $this->findOrThrowMatrix($id);
+
+        /** @var Characteristic $characteristic */
+        foreach ($matrix->getCharacteristics() as $characteristic) {
+            if ($characteristicId === $characteristic->getId()) {
+                $matrix->removeCharacteristic($characteristic);
+                break;
+            }
+        }
+
+        $cells = $this->cells->findBy([
+            'matrixId' => $matrix->getId(),
+            'characteristicId' => $characteristicId,
+        ]);
+
+        foreach ($cells as $cell) {
+            /** @var MatrixCellValue $value */
+            foreach ($cell->getMatrixCellValues() as $value) {
+                $this->em->remove($value);
+            }
+            $this->em->remove($cell);
+        }
+
+        $this->em->flush();
+    }
 }

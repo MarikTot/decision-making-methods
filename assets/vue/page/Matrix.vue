@@ -1,11 +1,19 @@
 <template>
   <table class="table table-bordered">
     <thead>
+    <tr v-if="reactiveMatrix.characteristics.length > 0">
+      <td :colspan="reactiveMatrix.alternatives.length > 0 ? 2 : 1"></td>
+      <td class="text-center align-middle" v-for="characteristic in reactiveMatrix.characteristics">
+        <a @click="removeCharacteristic(characteristic)" class="btn btn-sm btn-danger"><i class="fa fa-xmark"></i> Удалить</a>
+      </td>
+      <td v-if="reactiveCharacteristics.length > 0"></td>
+    </tr>
     <tr>
+      <th v-if="reactiveMatrix.alternatives.length > 0"></th>
       <th scope="col">Альтернативы</th>
       <th scope="col" v-for="characteristic in reactiveMatrix.characteristics">{{ characteristic.name }}</th>
-      <th scope="col">
-        <div v-if="reactiveCharacteristics.length > 0" class="p-2 d-flex justify-content-end">
+      <th scope="col" v-if="reactiveCharacteristics.length > 0">
+        <div class="p-2 d-flex justify-content-end">
           <select class="form-select-sm form-select d-inline w-auto" style="margin-right: 10px" name="characteristic" id="characteristic" v-model="newCharacteristic">
             <option v-for="characteristic in reactiveCharacteristics" :value="characteristic.id">{{ characteristic.name }}</option>
           </select>
@@ -15,7 +23,12 @@
     </tr>
     </thead>
     <tbody>
-    <matrix-row v-if="reactiveMatrix.rows.length" v-for="row in reactiveMatrix.rows" :row="row" />
+    <matrix-row @remove-alternative="removeAlternativeHandler" v-for="alternative in reactiveMatrix.alternatives" :alternative="alternative" :matrix="reactiveMatrix" :characteristics="reactiveCharacteristics" />
+    <tr>
+      <td class="p-2" :colspan="cellsCount">
+<!--        todo: condition-->
+      </td>
+    </tr>
     <tr v-if="reactiveAlternatives.length > 0">
       <td class="p-2" :colspan="cellsCount">
         <select class="form-select-sm form-select d-inline w-auto" style="margin-right: 10px" name="alternative" id="alternative" v-model="newAlternative">
@@ -53,8 +66,9 @@
     },
     computed: {
       cellsCount() {
+        let emptyCell = this.reactiveCharacteristics.length > 0 ? 1 : 0;
         let count = this.reactiveMatrix.characteristics.length || 0;
-        return count + 2;
+        return count + 2 + emptyCell;
       },
     },
     mounted() {
@@ -64,6 +78,47 @@
       this.filterCharacteristics();
     },
     methods: {
+      removeAlternativeHandler(removeAlt) {
+        this.reactiveMatrix.alternatives = this.reactiveMatrix
+          .alternatives
+          .filter((alternative) => alternative.id !== removeAlt.id)
+        ;
+        this.reactiveMatrix.rows = this.reactiveMatrix
+          .rows
+          .filter((row) => row.alternative.id !== removeAlt.id)
+        ;
+        this.reactiveAlternatives.push(removeAlt);
+        this.newAlternative = this.reactiveAlternatives[0]?.id;
+      },
+      removeCharacteristic(removeChar) {
+        fetch('/api/matrix/remove-characteristic', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            'id': this.reactiveMatrix.id,
+            'characteristicId': removeChar.id,
+          }),
+        })
+          .then((response) => response.json())
+          .then((response) => {
+            this.reactiveMatrix
+                .rows
+                .map((row) => {
+                  row.cells = row.cells.filter((cell) => cell.characteristic.id !== removeChar.id)
+                  return row;
+                })
+            ;
+            this.reactiveMatrix.characteristics = this.reactiveMatrix
+                .characteristics
+                .filter((characteristic) => characteristic.id !== removeChar.id)
+            ;
+            this.reactiveCharacteristics.push(removeChar);
+            this.newCharacteristic = this.reactiveCharacteristics[0]?.id;
+          })
+        ;
+      },
       filterAlternatives() {
         let usedAlternatives = this.matrix.alternatives.map((alternative) => alternative.id);
         this.reactiveAlternatives = this.reactiveAlternatives.filter((alternative) => false === usedAlternatives.includes(alternative.id));
