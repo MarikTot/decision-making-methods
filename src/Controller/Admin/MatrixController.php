@@ -11,6 +11,7 @@ use App\Entity\Characteristic;
 use App\Entity\CharacteristicType;
 use App\Entity\Matrix;
 use App\Entity\Task;
+use App\Enum\MatrixConditionType;
 use App\Repository\AlternativeRepository;
 use App\Repository\CharacteristicRepository;
 use App\Repository\CharacteristicTypeRepository;
@@ -84,6 +85,8 @@ class MatrixController extends AbstractController
             return (new CharacteristicDto($characteristic))->toArray();
         }, $characteristics);
 
+        $conditions = [MatrixConditionType::MIN, MatrixConditionType::MAX];
+
         $matrixDto = new MatrixDto($matrix);
 
         return $this->render('page/matrix.html.twig', [
@@ -93,6 +96,7 @@ class MatrixController extends AbstractController
                 'characteristicTypes' => $characteristicTypes,
                 'alternatives' => $alternatives,
                 'characteristics' => $characteristics,
+                'conditions' => $conditions,
             ]
         ]);
     }

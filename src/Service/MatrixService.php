@@ -9,6 +9,7 @@ use App\Entity\Characteristic;
 use App\Entity\Matrix;
 use App\Entity\MatrixCell;
 use App\Entity\MatrixCellValue;
+use App\Entity\MatrixCondition;
 use App\Entity\Task;
 use App\Repository\AlternativeRepository;
 use App\Repository\CharacteristicRepository;
@@ -205,5 +206,39 @@ class MatrixService
         }
 
         $this->em->flush();
+    }
+
+    public function saveCondition(
+        int $id,
+        int $characteristicId,
+        string $condition,
+    ): MatrixCondition {
+        // todo: add condition validation
+
+        $matrix = $this->findOrThrowMatrix($id);
+
+        $characteristic = $this->characteristics->find($characteristicId);
+
+        if (null === $characteristic) {
+            throw new BadRequestException('Не удалось найти показатель');
+        }
+
+        /** @var null|MatrixCondition $currentCondition */
+        $matrixCondition = $matrix->getMatrixConditions()
+            ->reduce(fn (?MatrixCondition $result, MatrixCondition $mc) => $mc->getCharacteristic()->getId() === $characteristicId ? $mc : $result);
+
+        if (null === $matrixCondition) {
+            $matrixCondition = new MatrixCondition();
+
+            $matrixCondition->setMatrix($matrix);
+            $matrixCondition->setCharacteristic($characteristic);
+        }
+
+        $matrixCondition->setType($condition);
+
+        $this->em->persist($matrixCondition);
+        $this->em->flush();
+
+        return $matrixCondition;
     }
 }

@@ -25,8 +25,12 @@
     <tbody>
     <matrix-row @remove-alternative="removeAlternativeHandler" v-for="alternative in reactiveMatrix.alternatives" :alternative="alternative" :matrix="reactiveMatrix" :characteristics="reactiveCharacteristics" />
     <tr>
-      <td class="p-2" :colspan="cellsCount">
-<!--        todo: condition-->
+      <td :colspan="1"></td>
+      <th class="align-middle">Условие</th>
+      <td class="p-2" v-for="characteristic in reactiveMatrix.characteristics">
+        <select @change="saveCondition($event.target.value, characteristic)" class="form-select-sm form-select">
+          <option :selected="selected(condition, characteristic)" v-for="condition in conditions" :value="condition">{{ condition }}</option>
+        </select>
       </td>
     </tr>
     <tr v-if="reactiveAlternatives.length > 0">
@@ -45,7 +49,7 @@
   import MatrixRow from "./MatrixRow";
 
   export default {
-    props: ['matrix', 'alternatives', 'characteristics', 'characteristicTypes'],
+    props: ['matrix', 'alternatives', 'characteristics', 'characteristicTypes', 'conditions'],
     name: 'matrix',
     components: {
       MatrixRow,
@@ -78,6 +82,27 @@
       this.filterCharacteristics();
     },
     methods: {
+      saveCondition(condition, characteristic) {
+        fetch('/api/matrix/save-condition', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            'id': this.reactiveMatrix.id,
+            'characteristicId': characteristic.id,
+            'condition': condition,
+          }),
+        })
+          .then((response) => response.json())
+          .then((response) => {
+
+          })
+        ;
+      },
+      selected(condition, characteristic) {
+        return condition === (this.reactiveMatrix.conditions[characteristic.id]?.type || null);
+      },
       removeAlternativeHandler(removeAlt) {
         this.reactiveMatrix.alternatives = this.reactiveMatrix
           .alternatives

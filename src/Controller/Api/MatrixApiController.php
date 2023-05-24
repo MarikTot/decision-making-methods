@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Dto\CharacteristicDto;
 use App\Dto\MatrixCellDto;
+use App\Dto\MatrixConditionDto;
 use App\Dto\MatrixRowDto;
 use App\Entity\MatrixCell;
 use App\Service\MatrixService;
@@ -105,6 +106,26 @@ class MatrixApiController extends BaseApiController
 
         return $this->response(
             data: ['success' => true],
+        );
+    }
+
+    #[Route(
+        path: '/save-condition',
+        name: 'save-condition',
+        methods: [Request::METHOD_POST],
+    )]
+    public function saveCondition(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $matrixCondition = $this->matrixService->saveCondition(
+            $data['id'],
+            $data['characteristicId'],
+            $data['condition'],
+        );
+
+        return $this->response(
+            data: (new MatrixConditionDto($matrixCondition))->toArray(),
         );
     }
 }

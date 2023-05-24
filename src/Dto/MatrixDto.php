@@ -57,9 +57,8 @@ class MatrixDto
 
         /** @var MatrixCondition $condition */
         foreach ($this->matrix->getMatrixConditions() as $condition) {
-            $this->conditions[] = new MatrixConditionDto($condition);
+            $this->conditions[$condition->getCharacteristic()->getId()] = new MatrixConditionDto($condition);
         }
-
     }
 
     public function toArray(): array
@@ -69,6 +68,7 @@ class MatrixDto
             'alternatives' => array_map(fn (AlternativeDto $alternative) => $alternative->toArray(), $this->alternatives),
             'characteristics' => array_map(fn (CharacteristicDto $characteristic) => $characteristic->toArray(), $this->characteristics),
             'rows' => array_map(fn (MatrixRowDto $row) => $row->toArray(), $this->rows),
+            'conditions' => array_map(fn (MatrixConditionDto $condition) => $condition->toArray(), $this->conditions),
         ];
     }
 }

@@ -66,7 +66,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.cell);
+    // console.log(this.cell);
   },
 };
 </script>
