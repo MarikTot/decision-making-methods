@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\UserRole;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -21,7 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $username = null;
+    private string $username;
 
     #[ORM\Column]
     private array $roles = [];
@@ -29,12 +31,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: MatrixDecision::class)]
+    private Collection $matrixDecisions;
+
+    public function __construct()
+    {
+        $this->matrixDecisions = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUsername(): ?string
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -113,5 +123,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 UserRole::USER,
             ]);
         }
+    }
+
+    /**
+     * @return Collection<int, MatrixDecision>
+     */
+    public function getMatrixDecisions(): Collection
+    {
+        return $this->matrixDecisions;
+    }
+
+    public function addMatrixDecision(MatrixDecision $matrixDecision): self
+    {
+        if (!$this->matrixDecisions->contains($matrixDecision)) {
+            $this->matrixDecisions->add($matrixDecision);
+            $matrixDecision->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMatrixDecision(MatrixDecision $matrixDecision): self
+    {
+        if ($this->matrixDecisions->removeElement($matrixDecision)) {
+            // set the owning side to null (unless already changed)
+            if ($matrixDecision->getCreatedBy() === $this) {
+                $matrixDecision->setCreatedBy(null);
+            }
+        }
+
+        return $this;
     }
 }

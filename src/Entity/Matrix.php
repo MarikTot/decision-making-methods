@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MatrixRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\ORM\Mapping as ORM;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 
@@ -19,11 +20,13 @@ class Matrix
     #[ORM\ManyToOne(inversedBy: 'matrices')]
     private ?Task $task = null;
 
-    #[ORM\ManyToMany(targetEntity: Alternative::class)]
-    private Collection $alternatives;
+    #[ORM\OrderBy(['createdAt' => SortOrder::ASC])]
+    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixAlternative::class)]
+    private Collection $matrixAlternative;
 
-    #[ORM\ManyToMany(targetEntity: Characteristic::class)]
-    private Collection $characteristics;
+    #[ORM\OrderBy(['createdAt' => SortOrder::ASC])]
+    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixCharacteristic::class)]
+    private Collection $matrixCharacteristic;
 
     #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixCondition::class, orphanRemoval: true)]
     private Collection $matrixConditions;
@@ -31,12 +34,16 @@ class Matrix
     #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixCell::class, orphanRemoval: true)]
     private Collection $matrixCells;
 
+    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixDecision::class)]
+    private Collection $matrixDecisions;
+
     public function __construct()
     {
-        $this->alternatives = new ArrayCollection();
-        $this->characteristics = new ArrayCollection();
+        $this->matrixAlternative = new ArrayCollection();
+        $this->matrixCharacteristic = new ArrayCollection();
         $this->matrixConditions = new ArrayCollection();
         $this->matrixCells = new ArrayCollection();
+        $this->matrixDecisions = new ArrayCollection();
     }
 
     public function getId(): int
@@ -57,49 +64,67 @@ class Matrix
     }
 
     /**
-     * @return Collection<int, Alternative>
+     * @return Collection
      */
-    public function getAlternatives(): Collection
+    public function getMatrixAlternative(): Collection
     {
-        return $this->alternatives;
+        return $this->matrixAlternative;
     }
 
-    public function addAlternative(Alternative $alternative): self
+    /**
+     * @return ReadableCollection<int, Alternative>
+     */
+    public function getAlternatives(): ReadableCollection
     {
-        if (!$this->alternatives->contains($alternative)) {
-            $this->alternatives->add($alternative);
+        return $this->getMatrixAlternative()->map(fn(MatrixAlternative $ma) => $ma->getAlternative());
+    }
+
+    public function addMatrixAlternative(MatrixAlternative $ma): self
+    {
+        if (!$this->matrixAlternative->contains($ma)) {
+            $this->matrixAlternative->add($ma);
+            $ma->setMatrix($this);
         }
 
         return $this;
     }
 
-    public function removeAlternative(Alternative $alternative): self
+    public function removeMatrixAlternative(MatrixAlternative $ma): self
     {
-        $this->alternatives->removeElement($alternative);
+        $this->matrixAlternative->removeElement($ma);
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Characteristic>
+     * @return ReadableCollection<int, Characteristic>
      */
-    public function getCharacteristics(): Collection
+    public function getCharacteristics(): ReadableCollection
     {
-        return $this->characteristics;
+        return $this->getMatrixCharacteristic()->map(fn(MatrixCharacteristic $mc) => $mc->getCharacteristic());
     }
 
-    public function addCharacteristic(Characteristic $characteristic): self
+    /**
+     * @return Collection<int, MatrixCharacteristic>
+     */
+    public function getMatrixCharacteristic(): Collection
     {
-        if (!$this->characteristics->contains($characteristic)) {
-            $this->characteristics->add($characteristic);
+        return $this->matrixCharacteristic;
+    }
+
+    public function addMatrixCharacteristic(MatrixCharacteristic $matrixCharacteristic): self
+    {
+        if (!$this->matrixCharacteristic->contains($matrixCharacteristic)) {
+            $this->matrixCharacteristic->add($matrixCharacteristic);
+            $matrixCharacteristic->setMatrix($this);
         }
 
         return $this;
     }
 
-    public function removeCharacteristic(Characteristic $characteristic): self
+    public function removeMatrixCharacteristic(MatrixCharacteristic $matrixCharacteristic): self
     {
-        $this->characteristics->removeElement($characteristic);
+        $this->matrixCharacteristic->removeElement($matrixCharacteristic);
 
         return $this;
     }
@@ -167,5 +192,35 @@ class Matrix
     public function __toString(): string
     {
         return sprintf('%s(%s)', $this->getId(), $this->getTask()->getTitle());
+    }
+
+    /**
+     * @return Collection<int, MatrixDecision>
+     */
+    public function getMatrixDecisions(): Collection
+    {
+        return $this->matrixDecisions;
+    }
+
+    public function addMatrixDecision(MatrixDecision $matrixDecision): self
+    {
+        if (!$this->matrixDecisions->contains($matrixDecision)) {
+            $this->matrixDecisions->add($matrixDecision);
+            $matrixDecision->setMatrix($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMatrixDecision(MatrixDecision $matrixDecision): self
+    {
+        if ($this->matrixDecisions->removeElement($matrixDecision)) {
+            // set the owning side to null (unless already changed)
+            if ($matrixDecision->getMatrix() === $this) {
+                $matrixDecision->setMatrix(null);
+            }
+        }
+
+        return $this;
     }
 }

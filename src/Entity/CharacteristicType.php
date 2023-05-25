@@ -6,6 +6,7 @@ use App\Repository\CharacteristicTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 
 #[ORM\Entity(repositoryClass: CharacteristicTypeRepository::class)]
 class CharacteristicType
@@ -17,6 +18,9 @@ class CharacteristicType
 
     #[ORM\Column(length: 255)]
     private string $name;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isNumber = false;
 
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Characteristic::class)]
     private Collection $characteristics;
@@ -53,6 +57,18 @@ class CharacteristicType
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function isNumber(): bool
+    {
+        return $this->isNumber;
+    }
+
+    public function setIsNumber(bool $isNumber): self
+    {
+        $this->isNumber = $isNumber;
 
         return $this;
     }

@@ -13,6 +13,7 @@ class MatrixRowDto
 
     public function __construct(Alternative $alternative, array $cells)
     {
+
         $this->cells = array_map(fn (MatrixCell $cell) => new MatrixCellDto($cell), $cells);
 
         $this->alternative = new AlternativeDto($alternative);

@@ -44,27 +44,44 @@ class FillDefaultDataCommand extends Command
     private function fillTypesData(OutputInterface $output): void
     {
         $data = [
-            'Число' => [],
-            'Строка' => [],
-            'С плавающей точкой' => [],
-            'Да/Нет' => [
-                'Да',
-                'Нет',
+            [
+                'name' => 'Число',
+                'isNumber' => true,
+                'enum' => [],
+            ],
+            [
+                'name' => 'Строка',
+                'isNumber' => false,
+                'enum' => [],
+            ],
+            [
+                'name' => 'С плавающей точкой',
+                'isNumber' => true,
+                'enum' => [],
+            ],
+            [
+                'name' => 'Да/Нет',
+                'isNumber' => false,
+                'enum' => [
+                    'Да',
+                    'Нет',
+                ],
             ],
         ];
 
-        foreach ($data as $defaultTypesData => $enums) {
+        foreach ($data as $defaultType) {
             $type = new CharacteristicType();
 
-            $type->setName($defaultTypesData);
+            $type->setName($defaultType['name']);
             $type->setDefaultType(true);
+            $type->setIsNumber($defaultType['isNumber'] ?? false);
 
             $output->writeln('Добавлен новый тип ' . $type->getName());
 
             $this->em->persist($type);
 
-            if ([] !== $enums) {
-                foreach ($enums as $enum) {
+            if (isset($defaultType['enum']) && [] !== $defaultType['enum']) {
+                foreach ($defaultType['enum'] as $enum) {
                     $typeEnum = new CharacteristicTypeEnum();
 
                     $typeEnum->setValue($enum);

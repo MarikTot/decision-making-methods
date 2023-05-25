@@ -7,6 +7,7 @@ use App\Entity\Characteristic;
 use App\Entity\Matrix;
 use App\Entity\MatrixCell;
 use App\Entity\MatrixCondition;
+use App\Entity\MatrixDecision;
 
 class MatrixDto
 {
@@ -17,6 +18,7 @@ class MatrixDto
     private array $rows = [];
     /** @var MatrixCondition[] */
     private array $conditions = [];
+    private array $decisions = [];
 
     public function __construct(
         private Matrix $matrix,
@@ -59,6 +61,11 @@ class MatrixDto
         foreach ($this->matrix->getMatrixConditions() as $condition) {
             $this->conditions[$condition->getCharacteristic()->getId()] = new MatrixConditionDto($condition);
         }
+
+        /** @var MatrixDecision $condition */
+        foreach ($this->matrix->getMatrixDecisions() as $decision) {
+            $this->decisions[] = new MatrixDecisionDto($decision);
+        }
     }
 
     public function toArray(): array
@@ -69,6 +76,7 @@ class MatrixDto
             'characteristics' => array_map(fn (CharacteristicDto $characteristic) => $characteristic->toArray(), $this->characteristics),
             'rows' => array_map(fn (MatrixRowDto $row) => $row->toArray(), $this->rows),
             'conditions' => array_map(fn (MatrixConditionDto $condition) => $condition->toArray(), $this->conditions),
+            'decisions' => array_map(fn (MatrixDecisionDto $decision) => $decision->toArray(), $this->decisions),
         ];
     }
 }

@@ -7,8 +7,10 @@ use App\Dto\CharacteristicCellsDto;
 use App\Entity\Alternative;
 use App\Entity\Characteristic;
 use App\Entity\Matrix;
+use App\Entity\MatrixAlternative;
 use App\Entity\MatrixCell;
 use App\Entity\MatrixCellValue;
+use App\Entity\MatrixCharacteristic;
 use App\Entity\MatrixCondition;
 use App\Entity\Task;
 use App\Repository\AlternativeRepository;
@@ -16,6 +18,7 @@ use App\Repository\CharacteristicRepository;
 use App\Repository\MatrixCellRepository;
 use App\Repository\MatrixCellValueRepository;
 use App\Repository\MatrixRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -52,14 +55,33 @@ class MatrixService
             throw new BadRequestException('Не удалось найти альтернативу');
         }
 
-        $matrix->addAlternative($alternative);
+        $alreadyExist = $matrix->getMatrixAlternative()->reduce(function (bool $accum, MatrixAlternative $ma) use ($alternative) {
+            return $accum || $ma->getAlternative()->getId() === $alternative->getId();
+        }, false);
+
+        if ($alreadyExist) {
+            // todo:
+            throw new \Exception();
+        }
+
+        $matrixAlternative = new MatrixAlternative();
+
+        $matrixAlternative->setMatrix($matrix);
+        $matrixAlternative->setAlternative($alternative);
+        $matrixAlternative->setCreatedAt(new DateTimeImmutable());
+
+        $this->em->persist($matrixAlternative);
+
+        $matrix->addMatrixAlternative($matrixAlternative);
 
         $cells = [];
         foreach ($matrix->getCharacteristics() as $characteristic) {
             $matrixCell = $this->createCell($matrix, $alternative, $characteristic);
             $cells[] = $matrixCell;
         }
-// todo: check cells
+
+        // todo: check cells
+
         $this->em->flush();
 
         return new AlternativeCellsDto($alternative, $cells);
@@ -75,7 +97,24 @@ class MatrixService
             throw new BadRequestException('Не удалось найти показатель');
         }
 
-        $matrix->addCharacteristic($characteristic);
+        $alreadyExist = $matrix->getMatrixCharacteristic()->reduce(function (bool $accum, MatrixCharacteristic $mc) use ($characteristic) {
+            return $accum || $mc->getCharacteristic()->getId() === $characteristic->getId();
+        }, false);
+
+        if ($alreadyExist) {
+            // todo:
+            throw new \Exception();
+        }
+
+        $matrixCharacteristic = new MatrixCharacteristic();
+
+        $matrixCharacteristic->setMatrix($matrix);
+        $matrixCharacteristic->setCharacteristic($characteristic);
+        $matrixCharacteristic->setCreatedAt(new DateTimeImmutable());
+
+        $this->em->persist($matrixCharacteristic);
+
+        $matrix->addMatrixCharacteristic($matrixCharacteristic);
 
         $cells = [];
         foreach ($matrix->getAlternatives() as $alternative) {
@@ -106,7 +145,7 @@ class MatrixService
         return $matrixCell;
     }
 
-    private function findOrThrowMatrix($id): Matrix
+    public function findOrThrowMatrix($id): Matrix
     {
         $matrix = $this->matrices->find($id);
 
@@ -156,10 +195,11 @@ class MatrixService
     {
         $matrix = $this->findOrThrowMatrix($id);
 
-        /** @var Alternative $alternative */
-        foreach ($matrix->getAlternatives() as $alternative) {
-            if ($alternativeId === $alternative->getId()) {
-                $matrix->removeAlternative($alternative);
+        /** @var MatrixAlternative $ma */
+        foreach ($matrix->getMatrixAlternative() as $ma) {
+            if ($alternativeId === $ma->getAlternative()->getId()) {
+                $matrix->removeMatrixAlternative($ma);
+                $this->em->remove($ma);
                 break;
             }
         }
@@ -184,10 +224,11 @@ class MatrixService
     {
         $matrix = $this->findOrThrowMatrix($id);
 
-        /** @var Characteristic $characteristic */
-        foreach ($matrix->getCharacteristics() as $characteristic) {
-            if ($characteristicId === $characteristic->getId()) {
-                $matrix->removeCharacteristic($characteristic);
+        /** @var MatrixCharacteristic $mc */
+        foreach ($matrix->getMatrixCharacteristic() as $mc) {
+            if ($characteristicId === $mc->getCharacteristic()->getId()) {
+                $matrix->removeMatrixCharacteristic($mc);
+                $this->em->remove($mc);
                 break;
             }
         }

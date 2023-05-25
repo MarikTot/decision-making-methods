@@ -28,9 +28,11 @@
       <td :colspan="1"></td>
       <th class="align-middle">Условие</th>
       <td class="p-2" v-for="characteristic in reactiveMatrix.characteristics">
-        <select @change="saveCondition($event.target.value, characteristic)" class="form-select-sm form-select">
+        <select v-if="characteristic.type.isNumber === true" @change="saveCondition($event.target.value, characteristic)" class="form-select-sm form-select">
           <option :selected="selected(condition, characteristic)" v-for="condition in conditions" :value="condition">{{ condition }}</option>
         </select>
+      </td>
+      <td v-if="reactiveCharacteristics.length > 0">
       </td>
     </tr>
     <tr v-if="reactiveAlternatives.length > 0">
@@ -43,6 +45,29 @@
     </tr>
     </tbody>
   </table>
+  <div class="d-flex justify-content-end">
+    <select class="form-select-sm form-select d-inline w-auto" style="margin-right: 10px" v-model="method">
+      <option value="guaranteed_result">Метод гарантированного результата</option>
+    </select>
+    <a v-on:click="solve" class="btn btn-success" href="#"><i class="fa fa-hand-fist"></i> Решить</a>
+  </div>
+
+  <div style="width: 200px" v-for="decision in reactiveMatrix.decisions">
+    Метод: {{ decision.method }} <br>
+    Создал: {{ decision.createdBy }} <br>
+    Дата: {{ decision.createdAt }} <br><br>
+    Результат: <br>
+    <table class="table table-sm table-bordered">
+      <tbody>
+        <tr v-for="row in decision.result">
+          <th>{{ row.name }}</th>
+          <td>{{ row.value }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
 </template>
 
 <script>
@@ -57,10 +82,12 @@
     data() {
       let newAlternative;
       let newCharacteristic;
+      let method = 'guaranteed_result';
 
       return {
         newAlternative,
         newCharacteristic,
+        method,
 
         'reactiveMatrix': this.matrix,
 
@@ -76,12 +103,27 @@
       },
     },
     mounted() {
-      console.log(this.matrix);
-
       this.filterAlternatives();
       this.filterCharacteristics();
     },
     methods: {
+      solve() {
+        fetch('/api/matrix/solve', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            'id': this.reactiveMatrix.id,
+            'method': this.method,
+          }),
+        })
+          .then((response) => response.json())
+          .then((response) => {
+            this.reactiveMatrix.decisions.push(response['data']);
+          })
+        ;
+      },
       saveCondition(condition, characteristic) {
         fetch('/api/matrix/save-condition', {
           method: 'POST',

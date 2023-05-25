@@ -5,9 +5,11 @@ namespace App\Controller\Api;
 use App\Dto\CharacteristicDto;
 use App\Dto\MatrixCellDto;
 use App\Dto\MatrixConditionDto;
+use App\Dto\MatrixDecisionDto;
 use App\Dto\MatrixRowDto;
 use App\Entity\MatrixCell;
 use App\Service\MatrixService;
+use App\Service\MatrixSolver\MatrixSolverService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,6 +19,7 @@ class MatrixApiController extends BaseApiController
 {
     public function __construct(
         private MatrixService $matrixService,
+        private MatrixSolverService $solverService,
     ) {
     }
 
@@ -126,6 +129,27 @@ class MatrixApiController extends BaseApiController
 
         return $this->response(
             data: (new MatrixConditionDto($matrixCondition))->toArray(),
+        );
+    }
+
+    #[Route(
+        path: '/solve',
+        name: 'solve',
+        methods: [Request::METHOD_POST],
+    )]
+    public function solve(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $decision = $this->solverService->solve(
+            $data['id'],
+            $data['method'],
+        );
+
+        $dto = new MatrixDecisionDto($decision);
+
+        return $this->response(
+            data: $dto->toArray(),
         );
     }
 }
