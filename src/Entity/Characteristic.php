@@ -4,7 +4,10 @@ namespace App\Entity;
 
 use App\Repository\CharacteristicRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[UniqueEntity(fields: ['name'])]
+#[ORM\Index(columns: ['name'], name: 'characteristic_name_idx')]
 #[ORM\Table(name: 'characteristics')]
 #[ORM\Entity(repositoryClass: CharacteristicRepository::class)]
 class Characteristic
@@ -22,7 +25,7 @@ class Characteristic
 
     #[ORM\ManyToOne(inversedBy: 'characteristics')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?CharacteristicType $type = null;
+    private ?Type $type = null;
 
     public function getId(): int
     {
@@ -60,12 +63,12 @@ class Characteristic
         return $this;
     }
 
-    public function getType(): ?CharacteristicType
+    public function getType(): ?Type
     {
         return $this->type;
     }
 
-    public function setType(?CharacteristicType $type): self
+    public function setType(?Type $type): self
     {
         $this->type = $type;
 

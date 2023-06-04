@@ -2,17 +2,17 @@
 
 namespace App\Dto;
 
-use App\Entity\MatrixCell;
-use App\Entity\MatrixCellValue;
+use App\Entity\Cell;
+use App\Entity\Value;
 
-class MatrixCellDto
+class CellDto
 {
     private int $id;
     private AlternativeDto $alternative;
     private CharacteristicDto $characteristic;
     private mixed $value;
 
-    public function __construct(MatrixCell $cell)
+    public function __construct(Cell $cell)
     {
         $this->id = $cell->getId();
         $this->alternative = new AlternativeDto($cell->getAlternative());
@@ -20,12 +20,12 @@ class MatrixCellDto
         $this->value = $this->parseValue($cell);
     }
 
-    private function parseValue(MatrixCell $cell): mixed
+    private function parseValue(Cell $cell): mixed
     {
         $value = [];
-        /** @var MatrixCellValue $cellValue */
-        foreach ($cell->getMatrixCellValues() as $cellValue) {
-            $value[] = $cellValue->getValue();
+        /** @var Value $valueObj */
+        foreach ($cell->getValues() as $valueObj) {
+            $value[] = $valueObj->getValue();
         }
 
         if (false === $cell->getCharacteristic()->isMultiple()) {

@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\CharacteristicTypeEnum;
+use App\Entity\TypeEnum;
 use App\Enum\UserRole;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -12,11 +12,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(UserRole::USER)]
-class CharacteristicTypeEnumCrudController extends BaseCrudController
+class TypeEnumCrudController extends BaseCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return CharacteristicTypeEnum::class;
+        return TypeEnum::class;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -29,7 +29,7 @@ class CharacteristicTypeEnumCrudController extends BaseCrudController
             ->setPageTitle(Crud::PAGE_NEW, 'Добавление значения')
             ->setPageTitle(
                 Crud::PAGE_DETAIL,
-                fn(CharacteristicTypeEnum $typeEnum) => sprintf('Значение #%s', $typeEnum->getId()),
+                fn(TypeEnum $typeEnum) => sprintf('Значение #%s', $typeEnum->getId()),
             )
             ->setDefaultSort(['id' => SortOrder::DESC])
             ;

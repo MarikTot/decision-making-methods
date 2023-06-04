@@ -9,7 +9,7 @@ class CharacteristicDto
     private int $id;
     private string $name;
     private bool $multiple;
-    private CharacteristicTypeDto $type;
+    private TypeDto $type;
 
     public function __construct(Characteristic $characteristic)
     {
@@ -17,7 +17,7 @@ class CharacteristicDto
         $this->name = $characteristic->getName();
         $this->multiple = $characteristic->isMultiple();
 
-        $this->type = new CharacteristicTypeDto($characteristic->getType());
+        $this->type = new TypeDto($characteristic->getType());
     }
 
     public function toArray(): array

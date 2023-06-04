@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\CharacteristicTypeEnumRepository;
+use App\Repository\TypeEnumRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CharacteristicTypeEnumRepository::class)]
-class CharacteristicTypeEnum
+#[ORM\Table(name: 'type_enums')]
+#[ORM\Entity(repositoryClass: TypeEnumRepository::class)]
+class TypeEnum
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,9 +17,9 @@ class CharacteristicTypeEnum
     #[ORM\Column(length: 255)]
     private ?string $value = null;
 
-    #[ORM\ManyToOne(inversedBy: 'characteristicTypeEnums')]
+    #[ORM\ManyToOne(inversedBy: 'typeEnums')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?CharacteristicType $type = null;
+    private ?Type $type = null;
 
     public function getId(): int
     {
@@ -44,12 +45,12 @@ class CharacteristicTypeEnum
         return $this;
     }
 
-    public function getType(): ?CharacteristicType
+    public function getType(): ?Type
     {
         return $this->type;
     }
 
-    public function setType(?CharacteristicType $type): self
+    public function setType(?Type $type): self
     {
         $this->type = $type;
 

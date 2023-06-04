@@ -3,8 +3,8 @@
 namespace App\Service\MatrixSolver\Strategy;
 
 use App\Entity\Matrix;
-use App\Entity\MatrixCell;
-use App\Entity\MatrixCondition;
+use App\Entity\Cell;
+use App\Entity\Condition;
 use App\Enum\DecisionMakingMethod;
 
 class GuaranteedResultStrategy implements SolverStrategyInterface
@@ -47,16 +47,16 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
     public function normalize(Matrix $matrix): array
     {
         $charTypeMap = [];
-        /** @var MatrixCondition $condition */
-        foreach ($matrix->getMatrixConditions() as $condition) {
+        /** @var Condition $condition */
+        foreach ($matrix->getConditions() as $condition) {
             $charTypeMap[$condition->getCharacteristic()->getId()] = $condition->getType();
         }
 
         $matrixArr = [];
-        /** @var MatrixCell $cell */
-        foreach ($matrix->getMatrixCells() as $cell) {
+        /** @var Cell $cell */
+        foreach ($matrix->getCells() as $cell) {
             // todo: переделать на множественное число потом
-            $matrixArr[$cell->getCharacteristic()->getId()][$cell->getAlternative()->getId()] = $cell->getMatrixCellValues()->first()->getValue();
+            $matrixArr[$cell->getCharacteristic()->getId()][$cell->getAlternative()->getId()] = $cell->getValues()->first()->getValue();
         }
 
         $newMatrixArr = [];

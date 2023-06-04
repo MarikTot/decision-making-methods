@@ -5,10 +5,12 @@ namespace App\Controller\Admin;
 use App\Entity\Matrix;
 use App\Entity\Task;
 use App\Enum\UserRole;
+use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
@@ -64,25 +66,18 @@ class TaskCrudController extends BaseCrudController
 
     public function configureFields(string $pageName): iterable
     {
+//        dd($this->getContext()->getEntity());
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('title', 'Название'),
             TextareaField::new('description', 'Описание'),
-            AssociationField::new('matrices', 'Матрицы')
-//                ->setTemplatePath('admin/field/CharacteristicType/matrices-list.html.twig')
-                ->formatValue(function (int $count, Task $task) {
-                    $links = [];
-                    /** @var Matrix $matrix */
-                    foreach ($task->getMatrices() as $matrix) {
-                        $url = $this->adminUrlGenerator->setRoute('matrix_edit', [
-                            'matrix' => $matrix->getId(),
-                        ])->generateUrl();
-                        $links[] = sprintf('<a href="%s">%s</a>', $url, $matrix->getId());
-                    }
-
-                    return implode(', ', $links);
-                })
-                ->onlyOnIndex(),
+            AssociationField::new('matrix', 'Матрица'),
+            AssociationField::new('alternatives')
+//                ->setQueryBuilder(function (QueryBuilder $queryBuilder) {
+//                    dd($queryBuilder->getQuery()->getSQL());
+//                })
+            , // todo: show only from matrix collection
+            AssociationField::new('characteristics'), // todo: show only from matrix collection
         ];
     }
 }

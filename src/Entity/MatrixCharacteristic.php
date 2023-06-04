@@ -5,7 +5,10 @@ namespace App\Entity;
 use App\Repository\MatrixCharacteristicRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[UniqueEntity(fields: ['matrix', 'characteristic'], errorPath: 'characteristic')]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Index(columns: ['matrix_id', 'characteristic_id'], name: 'matrix_characteristic_idx')]
 #[ORM\Entity(repositoryClass: MatrixCharacteristicRepository::class)]
 class MatrixCharacteristic
@@ -65,5 +68,19 @@ class MatrixCharacteristic
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onSave(): void
+    {
+        $this->setCreatedAt(new DateTimeImmutable());
+    }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            '%s',
+            $this->getCharacteristic()->getName(),
+        );
     }
 }

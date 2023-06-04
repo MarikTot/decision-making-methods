@@ -8,7 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\ORM\Mapping as ORM;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[ORM\Table(name: 'matrices')]
+#[UniqueEntity(fields: ['title'])]
+#[ORM\Index(columns: ['title'], name: 'matrix_title_idx')]
 #[ORM\Entity(repositoryClass: MatrixRepository::class)]
 class Matrix
 {
@@ -17,33 +21,29 @@ class Matrix
     #[ORM\Column]
     private int $id;
 
-    #[ORM\ManyToOne(inversedBy: 'matrices')]
-    private ?Task $task = null;
+    #[ORM\Column(length: 255)]
+    private string $title;
 
-    #[ORM\OrderBy(['createdAt' => SortOrder::ASC])]
+    #[ORM\OrderBy(['id' => SortOrder::ASC])]
     #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixAlternative::class)]
     private Collection $matrixAlternative;
 
-    #[ORM\OrderBy(['createdAt' => SortOrder::ASC])]
+    #[ORM\OrderBy(['id' => SortOrder::ASC])]
     #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixCharacteristic::class)]
     private Collection $matrixCharacteristic;
 
-    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixCondition::class, orphanRemoval: true)]
-    private Collection $matrixConditions;
+    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: Cell::class, orphanRemoval: true)]
+    private Collection $cells;
 
-    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixCell::class, orphanRemoval: true)]
-    private Collection $matrixCells;
-
-    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixDecision::class)]
-    private Collection $matrixDecisions;
+    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: Task::class)]
+    private Collection $tasks;
 
     public function __construct()
     {
         $this->matrixAlternative = new ArrayCollection();
         $this->matrixCharacteristic = new ArrayCollection();
-        $this->matrixConditions = new ArrayCollection();
-        $this->matrixCells = new ArrayCollection();
-        $this->matrixDecisions = new ArrayCollection();
+        $this->cells = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): int
@@ -51,14 +51,14 @@ class Matrix
         return $this->id;
     }
 
-    public function getTask(): ?Task
+    public function getTitle(): string
     {
-        return $this->task;
+        return $this->title;
     }
 
-    public function setTask(?Task $task): self
+    public function setTitle(string $title): self
     {
-        $this->task = $task;
+        $this->title = $title;
 
         return $this;
     }
@@ -130,59 +130,29 @@ class Matrix
     }
 
     /**
-     * @return Collection<int, MatrixCondition>
+     * @return Collection<int, Cell>
      */
-    public function getMatrixConditions(): Collection
+    public function getCells(): Collection
     {
-        return $this->matrixConditions;
+        return $this->cells;
     }
 
-    public function addMatrixCondition(MatrixCondition $matrixCondition): self
+    public function addCell(Cell $cell): self
     {
-        if (!$this->matrixConditions->contains($matrixCondition)) {
-            $this->matrixConditions->add($matrixCondition);
-            $matrixCondition->setMatrix($this);
+        if (!$this->cells->contains($cell)) {
+            $this->cells->add($cell);
+            $cell->setMatrix($this);
         }
 
         return $this;
     }
 
-    public function removeMatrixCondition(MatrixCondition $matrixCondition): self
+    public function removeCell(Cell $cell): self
     {
-        if ($this->matrixConditions->removeElement($matrixCondition)) {
+        if ($this->cells->removeElement($cell)) {
             // set the owning side to null (unless already changed)
-            if ($matrixCondition->getMatrix() === $this) {
-                $matrixCondition->setMatrix(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, MatrixCell>
-     */
-    public function getMatrixCells(): Collection
-    {
-        return $this->matrixCells;
-    }
-
-    public function addMatrixCell(MatrixCell $matrixCell): self
-    {
-        if (!$this->matrixCells->contains($matrixCell)) {
-            $this->matrixCells->add($matrixCell);
-            $matrixCell->setMatrix($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMatrixCell(MatrixCell $matrixCell): self
-    {
-        if ($this->matrixCells->removeElement($matrixCell)) {
-            // set the owning side to null (unless already changed)
-            if ($matrixCell->getMatrix() === $this) {
-                $matrixCell->setMatrix(null);
+            if ($cell->getMatrix() === $this) {
+                $cell->setMatrix(null);
             }
         }
 
@@ -191,33 +161,33 @@ class Matrix
 
     public function __toString(): string
     {
-        return sprintf('%s(%s)', $this->getId(), $this->getTask()->getTitle());
+        return sprintf('%s (%s)', $this->getTitle(), $this->getId());
     }
 
     /**
-     * @return Collection<int, MatrixDecision>
+     * @return Collection<int, Task>
      */
-    public function getMatrixDecisions(): Collection
+    public function getTasks(): Collection
     {
-        return $this->matrixDecisions;
+        return $this->tasks;
     }
 
-    public function addMatrixDecision(MatrixDecision $matrixDecision): self
+    public function addTask(Task $task): self
     {
-        if (!$this->matrixDecisions->contains($matrixDecision)) {
-            $this->matrixDecisions->add($matrixDecision);
-            $matrixDecision->setMatrix($this);
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->setMatrix($this);
         }
 
         return $this;
     }
 
-    public function removeMatrixDecision(MatrixDecision $matrixDecision): self
+    public function removeTask(Task $task): self
     {
-        if ($this->matrixDecisions->removeElement($matrixDecision)) {
+        if ($this->tasks->removeElement($task)) {
             // set the owning side to null (unless already changed)
-            if ($matrixDecision->getMatrix() === $this) {
-                $matrixDecision->setMatrix(null);
+            if ($task->getMatrix() === $this) {
+                $task->setMatrix(null);
             }
         }
 

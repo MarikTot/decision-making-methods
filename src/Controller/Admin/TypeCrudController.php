@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\CharacteristicType;
+use App\Entity\Type;
 use App\Enum\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
@@ -11,11 +11,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(UserRole::USER)]
-class CharacteristicTypeCrudController extends BaseCrudController
+class TypeCrudController extends BaseCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return CharacteristicType::class;
+        return Type::class;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -28,7 +28,7 @@ class CharacteristicTypeCrudController extends BaseCrudController
             ->setPageTitle(Crud::PAGE_NEW, 'Добавление типа')
             ->setPageTitle(
                 Crud::PAGE_DETAIL,
-                fn(CharacteristicType $type) => sprintf('Тип #%s', $type->getId()),
+                fn(Type $type) => sprintf('Тип #%s', $type->getId()),
             )
             ->setDefaultSort(['id' => SortOrder::DESC])
             ;
@@ -38,8 +38,8 @@ class CharacteristicTypeCrudController extends BaseCrudController
     {
         return [
             TextField::new('name', 'Название'),
-            AssociationField::new('characteristicTypeEnums', 'Варианты значения')
-                ->setTemplatePath('admin/field/CharacteristicType/characteristic-type-enums.html.twig')
+            AssociationField::new('typeEnums', 'Варианты значения')
+                ->setTemplatePath('admin/field/Type/type-enums.html.twig')
         ];
     }
 }

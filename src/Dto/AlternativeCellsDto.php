@@ -3,13 +3,13 @@
 namespace App\Dto;
 
 use App\Entity\Alternative;
-use App\Entity\MatrixCell;
+use App\Entity\Cell;
 
 class AlternativeCellsDto
 {
     public function __construct(
         private Alternative $alternative,
-        /** @var MatrixCell[] */
+        /** @var Cell[] */
         private array $cells,
     ) {
     }
@@ -20,7 +20,7 @@ class AlternativeCellsDto
     }
 
     /**
-     * @return MatrixCell[]
+     * @return Cell[]
      */
     public function getCells(): array
     {

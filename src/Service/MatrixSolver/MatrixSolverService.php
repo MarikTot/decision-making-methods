@@ -2,8 +2,8 @@
 
 namespace App\Service\MatrixSolver;
 
-use App\Entity\MatrixDecision;
-use App\Service\MatrixService;
+use App\Entity\Result;
+use App\Service\Matrix\MatrixService;
 use App\Service\MatrixSolver\Factory\SolverStrategyFactory;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,7 +19,7 @@ class MatrixSolverService
     ) {
     }
 
-    public function solve(int $matrixId, string $method): MatrixDecision
+    public function solve(int $matrixId, string $method): Result
     {
         /**
          * 1. Находим матрицу
@@ -37,7 +37,7 @@ class MatrixSolverService
         /**
          * 5. сохраняем
          */
-        $decision = new MatrixDecision();
+        $decision = new Result();
 
         $decision->setMatrix($matrix);
         $decision->setResult($result);

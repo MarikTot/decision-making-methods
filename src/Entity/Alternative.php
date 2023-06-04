@@ -5,7 +5,10 @@ namespace App\Entity;
 use App\Repository\AlternativeRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[UniqueEntity(fields: ['name'])]
+#[ORM\Index(columns: ['name'], name: 'alternative_name_idx')]
 #[ORM\Table(name: 'alternatives')]
 #[ORM\Entity(repositoryClass: AlternativeRepository::class)]
 #[ORM\HasLifecycleCallbacks]

@@ -2,26 +2,23 @@
 
 namespace App\Entity;
 
-use App\Repository\MatrixDecisionRepository;
+use App\Repository\ResultRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MatrixDecisionRepository::class)]
-class MatrixDecision
+#[ORM\Table(name: 'results')]
+#[ORM\Entity(repositoryClass: ResultRepository::class)]
+class Result
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
-    #[ORM\ManyToOne(inversedBy: 'matrixDecisions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Matrix $matrix;
-
     #[ORM\Column]
     private DateTimeImmutable $createdAt;
 
-    #[ORM\ManyToOne(inversedBy: 'matrixDecisions')]
+    #[ORM\ManyToOne(inversedBy: 'results')]
     #[ORM\JoinColumn(nullable: false)]
     private User $createdBy;
 
@@ -31,21 +28,13 @@ class MatrixDecision
     #[ORM\Column]
     private array $result = [];
 
+    #[ORM\ManyToOne(inversedBy: 'results')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Task $task = null;
+
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getMatrix(): Matrix
-    {
-        return $this->matrix;
-    }
-
-    public function setMatrix(Matrix $matrix): self
-    {
-        $this->matrix = $matrix;
-
-        return $this;
     }
 
     public function getCreatedAt(): DateTimeImmutable
@@ -92,6 +81,18 @@ class MatrixDecision
     public function setResult(array $result): self
     {
         $this->result = $result;
+
+        return $this;
+    }
+
+    public function getTask(): ?Task
+    {
+        return $this->task;
+    }
+
+    public function setTask(?Task $task): self
+    {
+        $this->task = $task;
 
         return $this;
     }

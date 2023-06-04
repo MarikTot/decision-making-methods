@@ -14,7 +14,7 @@
       <th scope="col" v-for="characteristic in reactiveMatrix.characteristics">{{ characteristic.name }}</th>
       <th scope="col" v-if="reactiveCharacteristics.length > 0">
         <div class="p-2 d-flex justify-content-end">
-          <select class="form-select-sm form-select d-inline w-auto" style="margin-right: 10px" name="characteristic" id="characteristic" v-model="newCharacteristic">
+          <select data-live-search="true" class="form-select-sm form-select d-inline w-auto" style="margin-right: 10px" name="characteristic" id="characteristic" v-model="newCharacteristic">
             <option v-for="characteristic in reactiveCharacteristics" :value="characteristic.id">{{ characteristic.name }}</option>
           </select>
           <a v-on:click="addCharacteristic" class="btn btn-success" href="#"><i class="fa fa-plus"></i> Добавить</a>
@@ -28,7 +28,7 @@
       <td :colspan="1"></td>
       <th class="align-middle">Условие</th>
       <td class="p-2" v-for="characteristic in reactiveMatrix.characteristics">
-        <select v-if="characteristic.type.isNumber === true" @change="saveCondition($event.target.value, characteristic)" class="form-select-sm form-select">
+        <select data-live-search="true" v-if="characteristic.type.isNumber === true" @change="saveCondition($event.target.value, characteristic)" class="form-select-sm form-select">
           <option :selected="selected(condition, characteristic)" v-for="condition in conditions" :value="condition">{{ condition }}</option>
         </select>
       </td>
@@ -37,7 +37,7 @@
     </tr>
     <tr v-if="reactiveAlternatives.length > 0">
       <td class="p-2" :colspan="cellsCount">
-        <select class="form-select-sm form-select d-inline w-auto" style="margin-right: 10px" name="alternative" id="alternative" v-model="newAlternative">
+        <select data-live-search="true" class="form-select-sm form-select d-inline w-auto" style="margin-right: 10px" name="alternative" id="alternative" v-model="newAlternative">
           <option v-for="alternative in this.reactiveAlternatives" :value="alternative.id">{{ alternative.name }}</option>
         </select>
         <a v-on:click="addAlternative" class="btn btn-success" href="#"><i class="fa fa-plus"></i> Добавить</a>
@@ -46,7 +46,7 @@
     </tbody>
   </table>
   <div class="d-flex justify-content-end">
-    <select class="form-select-sm form-select d-inline w-auto" style="margin-right: 10px" v-model="method">
+    <select data-live-search="true" class="form-select-sm form-select d-inline w-auto" style="margin-right: 10px" v-model="method">
       <option value="guaranteed_result">Метод гарантированного результата</option>
     </select>
     <a v-on:click="solve" class="btn btn-success" href="#"><i class="fa fa-hand-fist"></i> Решить</a>

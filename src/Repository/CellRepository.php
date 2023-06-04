@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\MatrixDecision;
+use App\Entity\Cell;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<MatrixDecision>
+ * @extends ServiceEntityRepository<Cell>
  *
- * @method MatrixDecision|null find($id, $lockMode = null, $lockVersion = null)
- * @method MatrixDecision|null findOneBy(array $criteria, array $orderBy = null)
- * @method MatrixDecision[]    findAll()
- * @method MatrixDecision[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Cell|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Cell|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Cell[]    findAll()
+ * @method Cell[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class MatrixDecisionRepository extends ServiceEntityRepository
+class CellRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, MatrixDecision::class);
+        parent::__construct($registry, Cell::class);
     }
 
-    public function save(MatrixDecision $entity, bool $flush = false): void
+    public function save(Cell $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class MatrixDecisionRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(MatrixDecision $entity, bool $flush = false): void
+    public function remove(Cell $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class MatrixDecisionRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return MatrixDecision[] Returns an array of MatrixDecision objects
+//     * @return Cell[] Returns an array of Cell objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class MatrixDecisionRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?MatrixDecision
+//    public function findOneBySomeField($value): ?Cell
 //    {
 //        return $this->createQueryBuilder('m')
 //            ->andWhere('m.exampleField = :val')

@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\MatrixCondition;
+use App\Entity\Result;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<MatrixCondition>
+ * @extends ServiceEntityRepository<Result>
  *
- * @method MatrixCondition|null find($id, $lockMode = null, $lockVersion = null)
- * @method MatrixCondition|null findOneBy(array $criteria, array $orderBy = null)
- * @method MatrixCondition[]    findAll()
- * @method MatrixCondition[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Result|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Result|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Result[]    findAll()
+ * @method Result[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class MatrixConditionRepository extends ServiceEntityRepository
+class ResultRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, MatrixCondition::class);
+        parent::__construct($registry, Result::class);
     }
 
-    public function save(MatrixCondition $entity, bool $flush = false): void
+    public function save(Result $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class MatrixConditionRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(MatrixCondition $entity, bool $flush = false): void
+    public function remove(Result $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class MatrixConditionRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return MatrixCondition[] Returns an array of MatrixCondition objects
+//     * @return Result[] Returns an array of Result objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class MatrixConditionRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?MatrixCondition
+//    public function findOneBySomeField($value): ?Result
 //    {
 //        return $this->createQueryBuilder('m')
 //            ->andWhere('m.exampleField = :val')

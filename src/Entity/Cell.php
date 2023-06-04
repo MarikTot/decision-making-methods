@@ -2,19 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\MatrixCellRepository;
+use App\Repository\CellRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[ORM\Table(name: 'cells')]
 #[UniqueEntity(
     fields: ['alternative', 'characteristic', 'matrix'],
     message: 'Такая ячейка уже есть',
 )]
-#[ORM\Index(columns: ['matrix_id', 'alternative_id', 'characteristic_id'], name: 'matrix_alternative_characteristic_idx')]
-#[ORM\Entity(repositoryClass: MatrixCellRepository::class)]
-class MatrixCell
+#[ORM\Index(columns: ['matrix_id', 'alternative_id', 'characteristic_id'], name: 'cell_matrix_alternative_characteristic_idx')]
+#[ORM\Entity(repositoryClass: CellRepository::class)]
+class Cell
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,16 +39,16 @@ class MatrixCell
     #[ORM\Column(name: 'matrix_id')]
     private int $matrixId;
 
-    #[ORM\ManyToOne(inversedBy: 'matrixCells')]
+    #[ORM\ManyToOne(inversedBy: 'cells')]
     #[ORM\JoinColumn(nullable: false)]
     private Matrix $matrix;
 
-    #[ORM\OneToMany(mappedBy: 'matrixCell', targetEntity: MatrixCellValue::class, orphanRemoval: true)]
-    private Collection $matrixCellValues;
+    #[ORM\OneToMany(mappedBy: 'cell', targetEntity: Value::class, orphanRemoval: true)]
+    private Collection $values;
 
     public function __construct()
     {
-        $this->matrixCellValues = new ArrayCollection();
+        $this->values = new ArrayCollection();
     }
 
     public function getId(): int
@@ -92,29 +93,29 @@ class MatrixCell
     }
 
     /**
-     * @return Collection<int, MatrixCellValue>
+     * @return Collection<int, Value>
      */
-    public function getMatrixCellValues(): Collection
+    public function getValues(): Collection
     {
-        return $this->matrixCellValues;
+        return $this->values;
     }
 
-    public function addMatrixCellValue(MatrixCellValue $matrixCellValue): self
+    public function addValue(Value $value): self
     {
-        if (!$this->matrixCellValues->contains($matrixCellValue)) {
-            $this->matrixCellValues->add($matrixCellValue);
-            $matrixCellValue->setMatrixCell($this);
+        if (!$this->values->contains($value)) {
+            $this->values->add($value);
+            $value->setCell($this);
         }
 
         return $this;
     }
 
-    public function removeMatrixCellValue(MatrixCellValue $matrixCellValue): self
+    public function removeValue(Value $value): self
     {
-        if ($this->matrixCellValues->removeElement($matrixCellValue)) {
+        if ($this->values->removeElement($value)) {
             // set the owning side to null (unless already changed)
-            if ($matrixCellValue->getMatrixCell() === $this) {
-                $matrixCellValue->setMatrixCell(null);
+            if ($value->getCell() === $this) {
+                $value->setCell(null);
             }
         }
 

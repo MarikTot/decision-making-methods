@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\MatrixCell;
+use App\Entity\Value;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<MatrixCell>
+ * @extends ServiceEntityRepository<Value>
  *
- * @method MatrixCell|null find($id, $lockMode = null, $lockVersion = null)
- * @method MatrixCell|null findOneBy(array $criteria, array $orderBy = null)
- * @method MatrixCell[]    findAll()
- * @method MatrixCell[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Value|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Value|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Value[]    findAll()
+ * @method Value[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class MatrixCellRepository extends ServiceEntityRepository
+class ValueRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, MatrixCell::class);
+        parent::__construct($registry, Value::class);
     }
 
-    public function save(MatrixCell $entity, bool $flush = false): void
+    public function save(Value $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class MatrixCellRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(MatrixCell $entity, bool $flush = false): void
+    public function remove(Value $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class MatrixCellRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return MatrixCell[] Returns an array of MatrixCell objects
+//     * @return Value[] Returns an array of Value objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class MatrixCellRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?MatrixCell
+//    public function findOneBySomeField($value): ?Value
 //    {
 //        return $this->createQueryBuilder('m')
 //            ->andWhere('m.exampleField = :val')

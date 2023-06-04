@@ -4,9 +4,12 @@ namespace App\Controller\Admin;
 
 use App\Entity\Alternative;
 use App\Entity\Characteristic;
-use App\Entity\CharacteristicType;
-use App\Entity\CharacteristicTypeEnum;
-use App\Entity\MatrixCell;
+use App\Entity\MatrixAlternative;
+use App\Entity\MatrixCharacteristic;
+use App\Entity\Type;
+use App\Entity\TypeEnum;
+use App\Entity\Matrix;
+use App\Entity\Cell;
 use App\Entity\MatrixValue;
 use App\Entity\Task;
 use App\Entity\User;
@@ -54,11 +57,11 @@ class DashboardController extends AbstractDashboardController
             ->setPermission(UserRole::ADMIN)
         ;
 
-        yield MenuItem::linkToCrud('Типы', 'fa fa-alt', CharacteristicType::class)
+        yield MenuItem::linkToCrud('Типы', 'fa fa-alt', Type::class)
             ->setPermission(UserRole::USER)
         ;
 
-        yield MenuItem::linkToCrud('Значения типов', 'fa fa-alt', CharacteristicTypeEnum::class)
+        yield MenuItem::linkToCrud('Значения типов', 'fa fa-alt', TypeEnum::class)
             ->setPermission(UserRole::USER)
         ;
 
@@ -68,12 +71,18 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Показатели', 'fa fa-alt', Characteristic::class)
             ->setPermission(UserRole::USER)
         ;
+        yield MenuItem::linkToCrud('Матрицы', 'fa fa-alt', Matrix::class)
+            ->setPermission(UserRole::USER)
+        ;
+//        yield MenuItem::linkToCrud('Связь матриц с альтернативами', 'fa fa-alt', MatrixAlternative::class)
+//            ->setPermission(UserRole::USER)
+//        ;
+//        yield MenuItem::linkToCrud('Связь матриц с показателями', 'fa fa-alt', MatrixCharacteristic::class)
+//            ->setPermission(UserRole::USER)
+//        ;
         yield MenuItem::linkToCrud('Задачи', 'fa fa-alt', Task::class)
             ->setPermission(UserRole::USER)
         ;
-//        yield MenuItem::linkToRoute('Матрицы 2.0', 'fa fa-alt', 'matrix')
-//            ->setPermission(UserRole::USER)
-//        ;
 
         yield MenuItem::section('Администрирование', 'fa fa-gear')
             ->setPermission(UserRole::ADMIN)

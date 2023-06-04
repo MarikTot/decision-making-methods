@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\CharacteristicTypeEnum;
+use App\Entity\TypeEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<CharacteristicTypeEnum>
+ * @extends ServiceEntityRepository<TypeEnum>
  *
- * @method CharacteristicTypeEnum|null find($id, $lockMode = null, $lockVersion = null)
- * @method CharacteristicTypeEnum|null findOneBy(array $criteria, array $orderBy = null)
- * @method CharacteristicTypeEnum[]    findAll()
- * @method CharacteristicTypeEnum[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method TypeEnum|null find($id, $lockMode = null, $lockVersion = null)
+ * @method TypeEnum|null findOneBy(array $criteria, array $orderBy = null)
+ * @method TypeEnum[]    findAll()
+ * @method TypeEnum[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CharacteristicTypeEnumRepository extends ServiceEntityRepository
+class TypeEnumRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, CharacteristicTypeEnum::class);
+        parent::__construct($registry, TypeEnum::class);
     }
 
-    public function save(CharacteristicTypeEnum $entity, bool $flush = false): void
+    public function save(TypeEnum $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class CharacteristicTypeEnumRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(CharacteristicTypeEnum $entity, bool $flush = false): void
+    public function remove(TypeEnum $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class CharacteristicTypeEnumRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return CharacteristicTypeEnum[] Returns an array of CharacteristicTypeEnum objects
+//     * @return TypeEnum[] Returns an array of TypeEnum objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class CharacteristicTypeEnumRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?CharacteristicTypeEnum
+//    public function findOneBySomeField($value): ?TypeEnum
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

@@ -4,11 +4,11 @@ namespace App\Tests\Unit;
 
 use App\Dto\AlternativeDto;
 use App\Dto\CharacteristicDto;
-use App\Dto\CharacteristicTypeDto;
+use App\Dto\TypeDto;
 use App\Entity\Alternative;
 use App\Entity\Characteristic;
-use App\Entity\CharacteristicType;
-use App\Entity\CharacteristicTypeEnum;
+use App\Entity\Type;
+use App\Entity\TypeEnum;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
@@ -32,34 +32,34 @@ class DtoTest extends TestCase
 
     public function testCreateCharacteristicDto()
     {
-        $characteristicType = new CharacteristicType();
+        $type = new Type();
 
-        $characteristicType->setId(1);
-        $characteristicType->setName('Test type 1');
-        $characteristicType->setDefaultType(false);
+        $type->setId(1);
+        $type->setName('Test type 1');
+        $type->setDefaultType(false);
 
-        $enum1 = new CharacteristicTypeEnum();
+        $enum1 = new TypeEnum();
 
         $enum1->setId(1);
-        $enum1->setType($characteristicType);
+        $enum1->setType($type);
         $enum1->setValue('Test1');
 
-        $characteristicType->addCharacteristicTypeEnum($enum1);
+        $type->addTypeEnum($enum1);
 
-        $enum2 = new CharacteristicTypeEnum();
+        $enum2 = new TypeEnum();
 
         $enum2->setId(1);
-        $enum2->setType($characteristicType);
+        $enum2->setType($type);
         $enum2->setValue('Test2');
 
-        $characteristicType->addCharacteristicTypeEnum($enum2);
+        $type->addTypeEnum($enum2);
 
         $characteristic = new Characteristic();
 
         $characteristic->setId(1);
         $characteristic->setName('Test');
         $characteristic->setMultiple(false);
-        $characteristic->setType($characteristicType);
+        $characteristic->setType($type);
 
         $characteristicDto = new CharacteristicDto($characteristic);
 

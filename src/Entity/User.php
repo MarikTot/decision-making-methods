@@ -31,12 +31,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: MatrixDecision::class)]
-    private Collection $matrixDecisions;
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Result::class)]
+    private Collection $results;
 
     public function __construct()
     {
-        $this->matrixDecisions = new ArrayCollection();
+        $this->results = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,29 +126,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, MatrixDecision>
+     * @return Collection<int, Result>
      */
-    public function getMatrixDecisions(): Collection
+    public function getResults(): Collection
     {
-        return $this->matrixDecisions;
+        return $this->results;
     }
 
-    public function addMatrixDecision(MatrixDecision $matrixDecision): self
+    public function addResult(Result $result): self
     {
-        if (!$this->matrixDecisions->contains($matrixDecision)) {
-            $this->matrixDecisions->add($matrixDecision);
-            $matrixDecision->setCreatedBy($this);
+        if (!$this->results->contains($result)) {
+            $this->results->add($result);
+            $result->setCreatedBy($this);
         }
 
         return $this;
     }
 
-    public function removeMatrixDecision(MatrixDecision $matrixDecision): self
+    public function removeResult(Result $result): self
     {
-        if ($this->matrixDecisions->removeElement($matrixDecision)) {
+        if ($this->results->removeElement($result)) {
             // set the owning side to null (unless already changed)
-            if ($matrixDecision->getCreatedBy() === $this) {
-                $matrixDecision->setCreatedBy(null);
+            if ($result->getCreatedBy() === $this) {
+                $result->setCreatedBy(null);
             }
         }
 

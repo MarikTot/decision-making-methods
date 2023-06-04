@@ -3,13 +3,13 @@
 namespace App\Dto;
 
 use App\Entity\Characteristic;
-use App\Entity\MatrixCell;
+use App\Entity\Cell;
 
 class CharacteristicCellsDto
 {
     public function __construct(
         private Characteristic $characteristic,
-        /** @var MatrixCell[] */
+        /** @var Cell[] */
         private array $cells,
     ) {
     }

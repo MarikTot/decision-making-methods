@@ -4,18 +4,18 @@ namespace App\Controller\Admin;
 
 use App\Dto\AlternativeDto;
 use App\Dto\CharacteristicDto;
-use App\Dto\CharacteristicTypeDto;
+use App\Dto\TypeDto;
 use App\Dto\MatrixDto;
 use App\Entity\Alternative;
 use App\Entity\Characteristic;
-use App\Entity\CharacteristicType;
+use App\Entity\Type;
 use App\Entity\Matrix;
 use App\Entity\Task;
-use App\Enum\MatrixConditionType;
+use App\Enum\ConditionType;
 use App\Repository\AlternativeRepository;
 use App\Repository\CharacteristicRepository;
-use App\Repository\CharacteristicTypeRepository;
-use App\Service\MatrixService;
+use App\Repository\TypeRepository;
+use App\Service\Matrix\MatrixService;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ class MatrixController extends AbstractController
         private AdminUrlGenerator $adminUrlGenerator,
         private AlternativeRepository $alternatives,
         private CharacteristicRepository $characteristics,
-        private CharacteristicTypeRepository $characteristicTypes,
+        private TypeRepository $types,
     ) {
     }
 
@@ -48,7 +48,7 @@ class MatrixController extends AbstractController
 
         return $this->redirect($url);
 //        $matrixData = [];
-//        $matrix->getMatrixCells()
+//        $matrix->getCells()
 //        /** @var Alternative $alternative */
 //        foreach ($matrix->getAlternatives()->toArray() as $alternative) {
 //            $columns = [];
@@ -70,10 +70,10 @@ class MatrixController extends AbstractController
     public function edit(Matrix $matrix): Response
     {
         // todo: вынести
-        $characteristicTypes = $this->characteristicTypes->findAll();
-        $characteristicTypes = array_map(function (CharacteristicType $type) {
-            return (new CharacteristicTypeDto($type))->toArray();
-        }, $characteristicTypes);
+        $types = $this->types->findAll();
+        $types = array_map(function (Type $type) {
+            return (new TypeDto($type))->toArray();
+        }, $types);
 
         $alternatives = $this->alternatives->findAll();
         $alternatives = array_map(function (Alternative $alternative) {
@@ -85,7 +85,7 @@ class MatrixController extends AbstractController
             return (new CharacteristicDto($characteristic))->toArray();
         }, $characteristics);
 
-        $conditions = [MatrixConditionType::MIN, MatrixConditionType::MAX];
+        $conditions = [ConditionType::MIN, ConditionType::MAX];
 
         $matrixDto = new MatrixDto($matrix);
 
@@ -93,7 +93,7 @@ class MatrixController extends AbstractController
             'title' => 'Редактирование матрицы #' . $matrix->getId(),
             'data' => [
                 'matrix' => $matrixDto->toArray(),
-                'characteristicTypes' => $characteristicTypes,
+                'types' => $types,
                 'alternatives' => $alternatives,
                 'characteristics' => $characteristics,
                 'conditions' => $conditions,

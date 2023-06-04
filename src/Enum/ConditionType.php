@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-interface MatrixConditionType
+interface ConditionType
 {
     public const MAX = 'max';
     public const MIN = 'min';

@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CharacteristicTypeRepository;
+use App\Repository\TypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Boolean;
 
-#[ORM\Entity(repositoryClass: CharacteristicTypeRepository::class)]
-class CharacteristicType
+#[ORM\Table(name: 'types')]
+#[ORM\Entity(repositoryClass: TypeRepository::class)]
+class Type
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -25,8 +26,8 @@ class CharacteristicType
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Characteristic::class)]
     private Collection $characteristics;
 
-    #[ORM\OneToMany(mappedBy: 'type', targetEntity: CharacteristicTypeEnum::class)]
-    private Collection $characteristicTypeEnums;
+    #[ORM\OneToMany(mappedBy: 'type', targetEntity: TypeEnum::class)]
+    private Collection $typeEnums;
 
     #[ORM\Column(options: ['default' => false])]
     private bool $defaultType = false;
@@ -34,7 +35,7 @@ class CharacteristicType
     public function __construct()
     {
         $this->characteristics = new ArrayCollection();
-        $this->characteristicTypeEnums = new ArrayCollection();
+        $this->typeEnums = new ArrayCollection();
     }
 
     public function getId(): int
@@ -104,29 +105,29 @@ class CharacteristicType
     }
 
     /**
-     * @return Collection<int, CharacteristicTypeEnum>
+     * @return Collection<int, TypeEnum>
      */
-    public function getCharacteristicTypeEnums(): Collection
+    public function getTypeEnums(): Collection
     {
-        return $this->characteristicTypeEnums;
+        return $this->typeEnums;
     }
 
-    public function addCharacteristicTypeEnum(CharacteristicTypeEnum $characteristicTypeEnum): self
+    public function addTypeEnum(TypeEnum $typeEnum): self
     {
-        if (!$this->characteristicTypeEnums->contains($characteristicTypeEnum)) {
-            $this->characteristicTypeEnums->add($characteristicTypeEnum);
-            $characteristicTypeEnum->setType($this);
+        if (!$this->typeEnums->contains($typeEnum)) {
+            $this->typeEnums->add($typeEnum);
+            $typeEnum->setType($this);
         }
 
         return $this;
     }
 
-    public function removeCharacteristicTypeEnum(CharacteristicTypeEnum $characteristicTypeEnum): self
+    public function removeTypeEnum(TypeEnum $typeEnum): self
     {
-        if ($this->characteristicTypeEnums->removeElement($characteristicTypeEnum)) {
+        if ($this->typeEnums->removeElement($typeEnum)) {
             // set the owning side to null (unless already changed)
-            if ($characteristicTypeEnum->getType() === $this) {
-                $characteristicTypeEnum->setType(null);
+            if ($typeEnum->getType() === $this) {
+                $typeEnum->setType(null);
             }
         }
 

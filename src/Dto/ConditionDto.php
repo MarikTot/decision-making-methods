@@ -2,15 +2,15 @@
 
 namespace App\Dto;
 
-use App\Entity\MatrixCondition;
+use App\Entity\Condition;
 
-class MatrixConditionDto
+class ConditionDto
 {
     private int $id;
     private string $type;
     private CharacteristicDto $characteristic;
 
-    public function __construct(MatrixCondition $condition)
+    public function __construct(Condition $condition)
     {
         $this->id = $condition->getId();
         $this->type = $condition->getType();

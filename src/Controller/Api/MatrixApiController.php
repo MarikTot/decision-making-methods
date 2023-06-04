@@ -3,12 +3,12 @@
 namespace App\Controller\Api;
 
 use App\Dto\CharacteristicDto;
-use App\Dto\MatrixCellDto;
-use App\Dto\MatrixConditionDto;
-use App\Dto\MatrixDecisionDto;
+use App\Dto\CellDto;
+use App\Dto\ConditionDto;
+use App\Dto\ResultDto;
 use App\Dto\MatrixRowDto;
-use App\Entity\MatrixCell;
-use App\Service\MatrixService;
+use App\Entity\Cell;
+use App\Service\Matrix\MatrixService;
 use App\Service\MatrixSolver\MatrixSolverService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,7 +72,7 @@ class MatrixApiController extends BaseApiController
 
         return $this->response(
             data: [
-                'cells' => array_map(fn (MatrixCell $cell) => (new MatrixCellDto($cell))->toArray(), $dto->getCells()),
+                'cells' => array_map(fn (Cell $cell) => (new CellDto($cell))->toArray(), $dto->getCells()),
                 'characteristic' => (new CharacteristicDto($dto->getCharacteristic()))->toArray(),
             ],
         );
@@ -121,14 +121,14 @@ class MatrixApiController extends BaseApiController
     {
         $data = json_decode($request->getContent(), true);
 
-        $matrixCondition = $this->matrixService->saveCondition(
+        $condition = $this->matrixService->saveCondition(
             $data['id'],
             $data['characteristicId'],
             $data['condition'],
         );
 
         return $this->response(
-            data: (new MatrixConditionDto($matrixCondition))->toArray(),
+            data: (new ConditionDto($condition))->toArray(),
         );
     }
 
@@ -146,7 +146,7 @@ class MatrixApiController extends BaseApiController
             $data['method'],
         );
 
-        $dto = new MatrixDecisionDto($decision);
+        $dto = new ResultDto($decision);
 
         return $this->response(
             data: $dto->toArray(),

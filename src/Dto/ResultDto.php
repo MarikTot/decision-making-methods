@@ -2,9 +2,9 @@
 
 namespace App\Dto;
 
-use App\Entity\MatrixDecision;
+use App\Entity\Result;
 
-class MatrixDecisionDto
+class ResultDto
 {
     private int $id;
     private array $result;
@@ -12,7 +12,7 @@ class MatrixDecisionDto
     private string $createdBy;
     private string $method;
 
-    public function __construct(MatrixDecision $decision)
+    public function __construct(Result $decision)
     {
         $this->id = $decision->getId();
         $this->result = $decision->getResult();

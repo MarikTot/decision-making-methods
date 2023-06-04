@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Entity\CharacteristicType;
-use App\Entity\CharacteristicTypeEnum;
+use App\Entity\Type;
+use App\Entity\TypeEnum;
 use App\Entity\User;
 use App\Enum\UserRole;
 use Doctrine\ORM\EntityManagerInterface;
@@ -70,7 +70,7 @@ class FillDefaultDataCommand extends Command
         ];
 
         foreach ($data as $defaultType) {
-            $type = new CharacteristicType();
+            $type = new Type();
 
             $type->setName($defaultType['name']);
             $type->setDefaultType(true);
@@ -82,7 +82,7 @@ class FillDefaultDataCommand extends Command
 
             if (isset($defaultType['enum']) && [] !== $defaultType['enum']) {
                 foreach ($defaultType['enum'] as $enum) {
-                    $typeEnum = new CharacteristicTypeEnum();
+                    $typeEnum = new TypeEnum();
 
                     $typeEnum->setValue($enum);
                     $typeEnum->setType($type);

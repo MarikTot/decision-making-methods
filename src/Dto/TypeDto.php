@@ -2,10 +2,10 @@
 
 namespace App\Dto;
 
-use App\Entity\CharacteristicType;
-use App\Entity\CharacteristicTypeEnum;
+use App\Entity\Type;
+use App\Entity\TypeEnum;
 
-class CharacteristicTypeDto
+class TypeDto
 {
     private int $id;
     private string $name;
@@ -13,15 +13,15 @@ class CharacteristicTypeDto
     private bool $isDefaultType;
     private ?array $enum = null;
 
-    public function __construct(CharacteristicType $type)
+    public function __construct(Type $type)
     {
         $this->id = $type->getId();
         $this->name = $type->getName();
         $this->isNumber = $type->isNumber();
         $this->isDefaultType = $type->isDefaultType();
 
-        /** @var CharacteristicTypeEnum $enum */
-        foreach ($type->getCharacteristicTypeEnums() as $enum) {
+        /** @var TypeEnum $enum */
+        foreach ($type->getTypeEnums() as $enum) {
             $this->enum[] = $enum->getValue();
         }
     }

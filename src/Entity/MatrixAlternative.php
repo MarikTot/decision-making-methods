@@ -5,7 +5,10 @@ namespace App\Entity;
 use App\Repository\MatrixAlternativeRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[UniqueEntity(fields: ['matrix', 'alternative'], errorPath: 'alternative')]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Index(columns: ['matrix_id', 'alternative_id'], name: 'matrix_alternative_idx')]
 #[ORM\Entity(repositoryClass: MatrixAlternativeRepository::class)]
 class MatrixAlternative
@@ -65,5 +68,19 @@ class MatrixAlternative
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onSave(): void
+    {
+        $this->setCreatedAt(new DateTimeImmutable());
+    }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            '%s',
+            $this->getAlternative()->getName(),
+        );
     }
 }

@@ -1,0 +1,21 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% extends ea.templatePath('layout') %}
+
+{% block content_title %}
+    {% if ea.entity.instance.id is defined %}
+        Редактирование матрицы
+    {% else %}
+        Добавление матрицы
+    {% endif %}
+{% endblock %}
+
+{% block page_actions %}
+    <button class="btn btn-primary action-save" type="submit" form="save-form">
+        <span class="btn-label"><i class="fas fa-floppy-disk"></i> <span class="action-label">Сохранить</span></span>
+    </button>
+{% endblock %}
+
+{% block main %}
+    {{ form(form) }}
+{% endblock %}

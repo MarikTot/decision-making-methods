@@ -2,20 +2,21 @@
 
 namespace App\Entity;
 
-use App\Repository\MatrixCellValueRepository;
+use App\Repository\ValueRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MatrixCellValueRepository::class)]
-class MatrixCellValue
+#[ORM\Table(name: 'values')]
+#[ORM\Entity(repositoryClass: ValueRepository::class)]
+class Value
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'matrixCellValues')]
+    #[ORM\ManyToOne(inversedBy: 'values')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?MatrixCell $matrixCell = null;
+    private ?Cell $cell = null;
 
     #[ORM\Column(length: 255)]
     private ?string $value = null;
@@ -25,14 +26,14 @@ class MatrixCellValue
         return $this->id;
     }
 
-    public function getMatrixCell(): ?MatrixCell
+    public function getCell(): ?Cell
     {
-        return $this->matrixCell;
+        return $this->cell;
     }
 
-    public function setMatrixCell(?MatrixCell $matrixCell): self
+    public function setCell(?Cell $cell): self
     {
-        $this->matrixCell = $matrixCell;
+        $this->cell = $cell;
 
         return $this;
     }

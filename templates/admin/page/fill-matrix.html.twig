@@ -1,0 +1,7 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}{{ title|default('Заполнение матрицы') }}{% endblock %}
+
+{% block main %}
+    <div {{ vue_component('FillMatrix', data) }}></div>
+{% endblock %}
