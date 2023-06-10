@@ -39,14 +39,14 @@ class MatrixSolverService
          */
         $decision = new Result();
 
-        $decision->setMatrix($matrix);
-        $decision->setResult($result);
-        $decision->setCreatedAt(new DateTimeImmutable());
-        $decision->setMethod($method);
-        $decision->setCreatedBy($this->security->getUser());
-
-        $this->em->persist($decision);
-        $this->em->flush();
+//        $decision->setMatrix($matrix);
+//        $decision->setResult($result);
+//        $decision->setCreatedAt(new DateTimeImmutable());
+//        $decision->setMethod($method);
+//        $decision->setCreatedBy($this->security->getUser());
+//
+//        $this->em->persist($decision);
+//        $this->em->flush();
 
         return $decision;
     }
