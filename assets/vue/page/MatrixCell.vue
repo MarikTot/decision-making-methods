@@ -19,7 +19,8 @@
     </div>
   </div>
   <div v-if="isView">
-    {{ formatValue }}
+    <span v-if="formatValue">{{ formatValue }}</span>
+    <span v-else class="text-danger">-</span>
   </div>
 </template>
 
@@ -36,7 +37,9 @@ export default {
   methods: {
     saveValue(event) {
       let value = event.target.value;
-      this.cell.value = value;
+      this.rcell.value = value;
+
+      this.$emit('changeCell', value);
 
       fetch('/api/matrix/save-value', {
         method: 'POST',

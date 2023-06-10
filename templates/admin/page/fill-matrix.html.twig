@@ -4,11 +4,4 @@
 
 {% block main %}
     <div {{ vue_component('FillMatrix', data) }}></div>
-    <div class="d-flex justify-content-end">
-        <a class="btn btn-success" href="{{ ea_url()
-            .setController('App\\Controller\\Admin\\MatrixCrudController')
-            .setAction('createTask')
-            .setEntityId(data.matrix.id)
-        }}">Создать задачу</a>
-    </div>
 {% endblock %}

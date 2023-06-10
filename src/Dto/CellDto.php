@@ -29,7 +29,7 @@ class CellDto
         }
 
         if (false === $cell->getCharacteristic()->isMultiple()) {
-            $value = array_shift($value) ?: null;
+            $value = array_shift($value) ?? null;
         }
 
         return $value;

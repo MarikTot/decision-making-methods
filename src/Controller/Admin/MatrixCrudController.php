@@ -74,7 +74,6 @@ class MatrixCrudController extends BaseCrudController
     ): Response {
         /** @var Matrix $matrix */
         $matrix = $context->getEntity()->getInstance();
-//        dd($matrix);
 
         $dto = new MatrixDto($matrix);
 
@@ -116,6 +115,14 @@ class MatrixCrudController extends BaseCrudController
             'data' => [
                 'matrix' => $dto->toArray(),
                 'allowEdit' => $matrix->getTasks()->count() === 0,
+                'next' => [
+                    'url' => $this->urlGenerator
+                        ->setController(MatrixCrudController::class)
+                        ->setAction('createTask')
+                        ->setEntityId($matrix->getId())
+                        ->generateUrl(),
+                    'label' => 'Создать задачу',
+                ],
             ],
         ]);
     }
