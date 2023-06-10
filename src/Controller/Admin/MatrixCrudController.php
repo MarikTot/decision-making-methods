@@ -64,7 +64,9 @@ class MatrixCrudController extends BaseCrudController
                 return $action->linkToCrudAction('saveMatrix');
             })
             ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
-                return $action->linkToCrudAction('saveMatrix');
+                return $action->linkToCrudAction('saveMatrix')
+                    ->displayIf(fn (Matrix $matrix) => $matrix->allowToEdit())
+                ;
             })
         ;
     }
@@ -114,7 +116,7 @@ class MatrixCrudController extends BaseCrudController
             'title' => sprintf('Данные матрицы "%s"', $matrix),
             'data' => [
                 'matrix' => $dto->toArray(),
-                'allowEdit' => $matrix->getTasks()->count() === 0,
+                'allowEdit' => $matrix->allowToEdit(),
                 'next' => [
                     'url' => $this->urlGenerator
                         ->setController(MatrixCrudController::class)

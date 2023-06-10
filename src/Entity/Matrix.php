@@ -193,4 +193,9 @@ class Matrix
 
         return $this;
     }
+
+    public function allowToEdit(): bool
+    {
+        return $this->getTasks()->count() === 0;
+    }
 }
