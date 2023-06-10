@@ -69,6 +69,39 @@ class MatrixCrudController extends BaseCrudController
         ;
     }
 
+    public function makeDecision(
+        AdminContext $context,
+    ): Response {
+        /** @var Matrix $matrix */
+        $matrix = $context->getEntity()->getInstance();
+//        dd($matrix);
+
+        $dto = new MatrixDto($matrix);
+
+        return $this->render('admin/page/make-decision.html.twig', [
+            'title' => sprintf('Решение матрицы "%s"', $matrix),
+            'data' => [
+                'matrix' => $dto->toArray(),
+            ],
+        ]);
+    }
+
+    public function createTask(
+        AdminContext $context,
+    ): Response {
+        /** @var Matrix $matrix */
+        $matrix = $context->getEntity()->getInstance();
+
+        $dto = new MatrixDto($matrix);
+
+        return $this->render('admin/page/create-task.html.twig', [
+            'title' => sprintf('Создание задачи для матрицы "%s"', $matrix),
+            'data' => [
+                'matrix' => $dto->toArray(),
+            ],
+        ]);
+    }
+
     public function fillMatrix(
         Request $request,
         AdminContext $context,
@@ -82,7 +115,7 @@ class MatrixCrudController extends BaseCrudController
             'title' => sprintf('Данные матрицы "%s"', $matrix),
             'data' => [
                 'matrix' => $dto->toArray(),
-                'allowEdit' => true,
+                'allowEdit' => $matrix->getTasks()->count() === 0,
             ],
         ]);
     }

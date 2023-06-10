@@ -1,0 +1,7 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}{{ title|default('Задача') }}{% endblock %}
+
+{% block main %}
+    <div {{ vue_component('CreateTask', data) }}></div>
+{% endblock %}

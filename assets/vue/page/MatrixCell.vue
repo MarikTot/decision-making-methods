@@ -50,7 +50,7 @@ export default {
       })
         .then((response) => response.json())
         .then((response) => {
-          // успех не показывать, ошибку да
+          // успех не показывать, ошибку - да
           console.log('zbs');
         })
       ;

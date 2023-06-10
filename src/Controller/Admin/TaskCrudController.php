@@ -46,38 +46,31 @@ class TaskCrudController extends BaseCrudController
             ->setDefaultSort(['id' => SortOrder::DESC])
         ;
     }
-
-    public function configureActions(Actions $actions): Actions
-    {
-        $actions = parent::configureActions($actions);
-
-        $newMatrix = Action::new('newMatrix', 'Создать матрицу', 'fa fa-plus')
-            ->linkToRoute('matrix_new', function (Task $task) {
-                return [
-                    'task' => $task->getId(),
-                ];
-            })
-        ;
-
-        return $actions
-            ->add(Crud::PAGE_INDEX, $newMatrix)
-        ;
-    }
+//
+//    public function configureActions(Actions $actions): Actions
+//    {
+//        $actions = parent::configureActions($actions);
+//
+//        $newMatrix = Action::new('newMatrix', 'Создать матрицу', 'fa fa-plus')
+//            ->linkToRoute('matrix_new', function (Task $task) {
+//                return [
+//                    'task' => $task->getId(),
+//                ];
+//            })
+//        ;
+//
+//        return $actions
+//            ->add(Crud::PAGE_INDEX, $newMatrix)
+//        ;
+//    }
 
     public function configureFields(string $pageName): iterable
     {
-//        dd($this->getContext()->getEntity());
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('title', 'Название'),
             TextareaField::new('description', 'Описание'),
             AssociationField::new('matrix', 'Матрица'),
-            AssociationField::new('alternatives')
-//                ->setQueryBuilder(function (QueryBuilder $queryBuilder) {
-//                    dd($queryBuilder->getQuery()->getSQL());
-//                })
-            , // todo: show only from matrix collection
-            AssociationField::new('characteristics'), // todo: show only from matrix collection
         ];
     }
 }
