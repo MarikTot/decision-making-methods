@@ -43,7 +43,7 @@ class CharacteristicCrudController extends BaseCrudController
             TextField::new('name', 'Название'),
             BooleanField::new('multiple', 'Может содержать несколько значений')
                 ->renderAsSwitch(false),
-            AssociationField::new('type', 'Тип'),
+            AssociationField::new('type', 'Тип оценоки по показателю'),
         ];
     }
 }

@@ -21,14 +21,14 @@ class TypeCrudController extends BaseCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Тип')
-            ->setEntityLabelInPlural('Типы')
-            ->setPageTitle(Crud::PAGE_EDIT, 'Редактирование типа')
-            ->setPageTitle(Crud::PAGE_INDEX, 'Типы')
-            ->setPageTitle(Crud::PAGE_NEW, 'Добавление типа')
+            ->setEntityLabelInSingular('Тип оценки')
+            ->setEntityLabelInPlural('Типы оценок по показателям')
+            ->setPageTitle(Crud::PAGE_EDIT, 'Редактирование типа оценок')
+            ->setPageTitle(Crud::PAGE_INDEX, 'Типы оценок по показателям')
+            ->setPageTitle(Crud::PAGE_NEW, 'Добавление типа оценки')
             ->setPageTitle(
                 Crud::PAGE_DETAIL,
-                fn(Type $type) => sprintf('Тип #%s', $type->getId()),
+                fn(Type $type) => sprintf('Тип оценки #%s', $type->getId()),
             )
             ->setDefaultSort(['id' => SortOrder::DESC])
             ;

@@ -57,7 +57,7 @@ class DashboardController extends AbstractDashboardController
             ->setPermission(UserRole::ADMIN)
         ;
 
-        yield MenuItem::linkToCrud('Типы', 'fa fa-alt', Type::class)
+        yield MenuItem::linkToCrud('Типы оценок по показателям', 'fa fa-alt', Type::class)
             ->setPermission(UserRole::USER)
         ;
 

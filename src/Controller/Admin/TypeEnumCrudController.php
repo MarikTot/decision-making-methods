@@ -38,7 +38,7 @@ class TypeEnumCrudController extends BaseCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            AssociationField::new('type', 'Тип')
+            AssociationField::new('type', 'Тип оценки по показателю')
                 ->setQueryBuilder(function (QueryBuilder $qb) {
                     $alias = $qb->getAllAliases()[0] ?? 'entity';
                     $qb->andWhere($qb->expr()->eq($alias . '.defaultType', 'false'));

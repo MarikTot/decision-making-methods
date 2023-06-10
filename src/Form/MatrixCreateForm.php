@@ -56,6 +56,7 @@ class MatrixCreateForm extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'data' => $matrix->getAlternatives()->toArray(),
+                'label' => 'Альтернативы',
             ])
             ->add('characteristics', ChoiceType::class, [
                 'attr' => [
@@ -76,6 +77,7 @@ class MatrixCreateForm extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'data' => $matrix->getCharacteristics()->toArray(),
+                'label' => 'Показатели',
             ])
         ;
     }
