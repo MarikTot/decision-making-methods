@@ -45,6 +45,14 @@ export default {
               'id': 'greater',
               'label': 'Больше',
             },
+            {
+              'id': 'lessOrEq',
+              'label': 'Меньше или равно',
+            },
+            {
+              'id': 'greaterOrEq',
+              'label': 'Больше или равно',
+            },
         );
       } else if (this.characteristic.type.enum === null) {
         this.conditions.push(

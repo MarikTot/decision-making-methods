@@ -72,6 +72,12 @@ export default {
             if (filter.condition === 'greater') {
               show = show && data[cId].value > filter.value;
             }
+            if (filter.condition === 'lessOrEq') {
+              show = show && data[cId].value <= filter.value;
+            }
+            if (filter.condition === 'greaterOrEq') {
+              show = show && data[cId].value >= filter.value;
+            }
             if (filter.condition === 'contain') {
               show = show && data[cId].value.includes(filter.value);
             }
