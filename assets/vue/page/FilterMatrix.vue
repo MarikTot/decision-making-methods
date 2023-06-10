@@ -59,24 +59,27 @@ export default {
       let table = Object.fromEntries(Object.entries(this.omatrix.table).filter(([alternativeName, data]) => {
         let show = true;
         for (const [cId, filter] of Object.entries(this.filters)) {
-          if (filter.value && filter.condition) {
+          let filteredValue = data[cId].characteristic.type.isNumber ? parseFloat(data[cId].value) : data[cId].value;
+          let filterValue = data[cId].characteristic.type.isNumber ? parseFloat(filter.value) : filter.value;
+
+          if (filter.value !== '' && filter.value !== null && filter.condition) {
             if (filter.condition === 'eq') {
-              show = show && data[cId].value == filter.value;
+              show = show && filteredValue === filterValue;
             }
             if (filter.condition === 'neq') {
-              show = show && data[cId].value != filter.value;
+              show = show && filteredValue !== filterValue;
             }
             if (filter.condition === 'less') {
-              show = show && data[cId].value < filter.value;
+              show = show && filteredValue < filterValue;
             }
             if (filter.condition === 'greater') {
-              show = show && data[cId].value > filter.value;
+              show = show && filteredValue > filterValue;
             }
             if (filter.condition === 'lessOrEq') {
-              show = show && data[cId].value <= filter.value;
+              show = show && filteredValue <= filterValue;
             }
             if (filter.condition === 'greaterOrEq') {
-              show = show && data[cId].value >= filter.value;
+              show = show && filteredValue >= filterValue;
             }
             if (filter.condition === 'contain') {
               show = show && data[cId].value.includes(filter.value);
