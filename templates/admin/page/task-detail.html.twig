@@ -1,0 +1,71 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var task \App\Entity\Task #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}{{ title|default('Просмотр задачи') }}{% endblock %}
+
+{% block main %}
+
+    <div class="card" style="max-width: 25rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ task.title }}</h5>
+            <p class="card-text">{{ task.description }}</p>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="accordion" id="accordionOriginalMatrix">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#accordionOriginalMatrixCollapseOne" aria-expanded="true" aria-controls="accordionOriginalMatrixCollapseOne">
+                    <i style="margin-right: 5px" class="fa fa-table"></i>
+                    Оригинальная матрица
+                </button>
+            </h2>
+            <div id="accordionOriginalMatrixCollapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionOriginalMatrix">
+                <div class="accordion-body bg-white">
+                    <div {{ vue_component('DisplayingMatrix', originalMatrixData) }}></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="accordion" id="accordionMatrix">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#accordionMatrixCollapseOne" aria-expanded="true" aria-controls="accordionMatrixCollapseOne">
+                    <i style="margin-right: 5px" class="fa fa-table"></i>
+                    Матрица
+                </button>
+            </h2>
+            <div id="accordionMatrixCollapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionMatrix">
+                <div class="accordion-body bg-white">
+                    <div {{ vue_component('DisplayingMatrix', matrixData) }}></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="accordion" id="accordionResult">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#accordionResultCollapseOne" aria-expanded="true" aria-controls="accordionResultCollapseOne">
+                    <i style="margin-right: 5px" class="fa fa-square-poll-vertical"></i>
+                    Решения
+                </button>
+            </h2>
+            <div id="accordionResultCollapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionResult">
+                <div class="accordion-body bg-white">
+                    -
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

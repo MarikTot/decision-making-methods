@@ -68,6 +68,11 @@ class MatrixCrudController extends BaseCrudController
                     ->displayIf(fn (Matrix $matrix) => $matrix->allowToEdit())
                 ;
             })
+            ->update(Crud::PAGE_DETAIL, Action::EDIT, function (Action $action) {
+                return $action->linkToCrudAction('saveMatrix')
+                    ->displayIf(fn (Matrix $matrix) => $matrix->allowToEdit())
+                ;
+            })
         ;
     }
 

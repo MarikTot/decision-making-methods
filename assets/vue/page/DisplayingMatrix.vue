@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="alert alert-info" role="alert">
+    <div v-if="showCheckboxes" class="alert alert-info" role="alert">
         Выберите показатели для сравнения
     </div>
 

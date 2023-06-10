@@ -6,6 +6,8 @@ use App\Entity\Alternative;
 use App\Entity\Characteristic;
 use App\Entity\Matrix;
 use App\Entity\Cell;
+use App\Entity\Task;
+use Doctrine\Common\Collections\ReadableCollection;
 
 class MatrixDto
 {
@@ -16,32 +18,84 @@ class MatrixDto
 
     public function __construct(
         private Matrix $matrix,
-    )
+        private ?Task $task = null,
+    ) {
+        $this->defineId();
+        $this->defineAlternatives();
+        $this->defineCharacteristics();
+        $this->defineTable();
+    }
+
+    private function defineId(): void
     {
         $this->id = $this->matrix->getId();
+    }
 
-        $this->alternatives = $this->matrix
-            ->getAlternatives()
+    private function defineAlternatives(): void
+    {
+        $alternatives = $this->getFilteredAlternatives();
+
+        $this->alternatives = $alternatives
             ->map(fn(Alternative $alternative) => new AlternativeDto($alternative))
             ->toArray();
+    }
 
-        $this->characteristics = $this->matrix
-            ->getCharacteristics()
+    private function defineCharacteristics(): void
+    {
+        $characteristics = $this->getFilteredCharacteristics();
+
+        $this->characteristics = $characteristics
             ->map(fn(Characteristic $characteristic) => new CharacteristicDto($characteristic))
             ->toArray();
+    }
+
+    private function defineTable(): void
+    {
+        $alternatives = $this->getFilteredAlternatives();
+        $characteristics = $this->getFilteredCharacteristics();
 
         /** @var Alternative $alternative */
-        foreach ($this->matrix->getAlternatives() as $alternative) {
+        foreach ($alternatives as $alternative) {
             /** @var Characteristic $characteristic */
-            foreach ($this->matrix->getCharacteristics() as $characteristic) {
+            foreach ($characteristics as $characteristic) {
                 $this->table[$alternative->getName()][$characteristic->getName()] = null;
             }
         }
 
         /** @var Cell $cell */
         foreach ($this->matrix->getCells() as $cell) {
+            if (
+                false === $alternatives->contains($cell->getAlternative())
+                || false === $characteristics->contains($cell->getCharacteristic())
+            ) {
+                continue;
+            }
             $this->table[$cell->getAlternative()->getName()][$cell->getCharacteristic()->getName()] = new CellDto($cell);
         }
+    }
+
+    private function getFilteredAlternatives(): ReadableCollection
+    {
+        $alternatives = $this->matrix->getAlternatives();
+
+        if (null !== $this->task) {
+            $alternatives = $alternatives
+                ->filter(fn(Alternative $alternative) => $this->task->getAlternatives()->contains($alternative));
+        }
+
+        return $alternatives;
+    }
+
+    private function getFilteredCharacteristics(): ReadableCollection
+    {
+        $characteristics = $this->matrix->getCharacteristics();
+
+        if (null !== $this->task) {
+            $characteristics = $characteristics
+                ->filter(fn(Characteristic $characteristic) => $this->task->getCharacteristics()->contains($characteristic));
+        }
+
+        return $characteristics;
     }
 
     public function toArray(): array

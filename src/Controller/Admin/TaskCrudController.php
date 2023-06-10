@@ -2,10 +2,9 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Matrix;
+use App\Dto\MatrixDto;
 use App\Entity\Task;
 use App\Enum\UserRole;
-use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -15,17 +14,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(UserRole::USER)]
 class TaskCrudController extends BaseCrudController
 {
-    public function __construct(
-        private AdminUrlGenerator $adminUrlGenerator,
-    ) {
-    }
-
     public static function getEntityFqcn(): string
     {
         return Task::class;
@@ -46,23 +39,36 @@ class TaskCrudController extends BaseCrudController
             ->setDefaultSort(['id' => SortOrder::DESC])
         ;
     }
-//
-//    public function configureActions(Actions $actions): Actions
-//    {
-//        $actions = parent::configureActions($actions);
-//
-//        $newMatrix = Action::new('newMatrix', 'Создать матрицу', 'fa fa-plus')
-//            ->linkToRoute('matrix_new', function (Task $task) {
-//                return [
-//                    'task' => $task->getId(),
-//                ];
-//            })
-//        ;
-//
-//        return $actions
-//            ->add(Crud::PAGE_INDEX, $newMatrix)
-//        ;
-//    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $actions = parent::configureActions($actions);
+
+        $actions->remove(Crud::PAGE_INDEX, Action::EDIT);
+        $actions->remove(Crud::PAGE_INDEX, Action::NEW);
+        $actions->remove(Crud::PAGE_DETAIL, Action::EDIT);
+
+        return $actions;
+    }
+
+    public function detail(AdminContext $context)
+    {
+        /** @var Task $task */
+        $task = $context->getEntity()->getInstance();
+
+        return $this->render('admin/page/task-detail.html.twig', [
+            'ea' => $context,
+            'task' => $task,
+            'originalMatrixData' => [
+                'matrix' => (new MatrixDto($task->getMatrix()))->toArray(),
+                'showCheckboxes' => false,
+            ],
+            'matrixData' => [
+                'matrix' => (new MatrixDto($task->getMatrix(), $task))->toArray(),
+                'showCheckboxes' => false,
+            ],
+        ]);
+    }
 
     public function configureFields(string $pageName): iterable
     {
