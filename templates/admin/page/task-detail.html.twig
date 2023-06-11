@@ -8,7 +8,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="card col-lg-4">
+            <div class="card col-lg-6">
                 <div class="card-body">
                     <h5 class="card-title">{{ task.title }}</h5>
                     <p class="card-text">{{ task.description }}</p>
@@ -21,15 +21,6 @@
                     </ul>
 
                     <br>
-
-{#                    <div {{ vue_component('MakeDecisionSelect', makeDecisionData) }}></div>#}
-
-{#                        <select class="form-select form-select-sm">#}
-{#                            {% for method, label in methods %}#}
-{#                                <option value="{{ method }}">{{ label }}</option>#}
-{#                            {% endfor %}#}
-{#                        </select>#}
-{#                        <a class="ms-2 btn btn-primary" href="{{ makeDecisionUrl }}">Решить</a>#}
                 </div>
             </div>
         </div>
