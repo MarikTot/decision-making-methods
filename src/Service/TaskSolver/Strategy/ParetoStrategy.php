@@ -2,7 +2,6 @@
 
 namespace App\Service\TaskSolver\Strategy;
 
-use App\Entity\Alternative;
 use App\Entity\Cell;
 use App\Entity\Condition;
 use App\Entity\Task;
@@ -11,6 +10,7 @@ use App\Enum\DecisionMakingMethod;
 
 class ParetoStrategy implements SolverStrategyInterface
 {
+    private Task $task;
 
     public static function getName(): string
     {
@@ -19,6 +19,7 @@ class ParetoStrategy implements SolverStrategyInterface
 
     public function solve(Task $task): array
     {
+        $this->task = $task;
         $matrixArr = $this->getMatrix($task);
 
         $alternativeMap = [];
@@ -47,26 +48,39 @@ class ParetoStrategy implements SolverStrategyInterface
         $oneGreater = false;
         $notLess = true;
         foreach ($alternative1 as $characteristicId => $value) {
-            if ($value > $alternative2[$characteristicId]) {
-                $oneGreater = true;
-            }
+            /** @var Condition $condition */
+            $condition = $this->task->getConditions()->filter(fn(Condition $condition) => $condition->getCharacteristic()->getId() === $characteristicId)->first();
 
-            if ($value < $alternative2[$characteristicId]) {
-                $notLess = false;
+            if ($condition->getType() === ConditionType::MAX) {
+                if ($value > $alternative2[$characteristicId]) {
+                    $oneGreater = true;
+                }
+
+                if ($value < $alternative2[$characteristicId]) {
+                    $notLess = false;
+                }
+            } else {
+                if ($value < $alternative2[$characteristicId]) {
+                    $oneGreater = true;
+                }
+
+                if ($value > $alternative2[$characteristicId]) {
+                    $notLess = false;
+                }
             }
         }
 
         return $oneGreater && $notLess;
     }
 
-    private function getMatrix(Task $task)
+    private function getMatrix(): array
     {
         $matrixArr = [];
         /** @var Cell $cell */
-        foreach ($task->getMatrix()->getCells() as $cell) {
+        foreach ($this->task->getMatrix()->getCells() as $cell) {
             if (
-                false === $task->getAlternatives()->contains($cell->getAlternative())
-                || false === $task->getCharacteristics()->contains($cell->getCharacteristic())
+                false === $this->task->getAlternatives()->contains($cell->getAlternative())
+                || false === $this->task->getCharacteristics()->contains($cell->getCharacteristic())
             ) {
                 continue;
             }
