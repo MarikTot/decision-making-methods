@@ -28,6 +28,7 @@
       <div class="row">
         <div class="col-lg-4">
           <GuaranteedResultMethod v-if="result.method.value === 'guaranteed_result'" :result="result.result" />
+          <ParetoMethod v-if="result.method.value === 'pareto'" :result="result.result" />
         </div>
       </div>
     </div>
@@ -36,12 +37,14 @@
 <script>
 
 import GuaranteedResultMethod from "./methods/GuaranteedResultMethod";
+import ParetoMethod from "./methods/ParetoMethod";
 
 export default {
   props: ['result'],
   name: 'result-item',
   components: {
     GuaranteedResultMethod,
+    ParetoMethod,
   },
   data() {
     return {

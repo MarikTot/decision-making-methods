@@ -23,7 +23,7 @@ class Task
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Result::class)]
+    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Result::class, cascade: ['remove'])]
     private Collection $results;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
@@ -35,7 +35,7 @@ class Task
     #[ORM\ManyToMany(targetEntity: Characteristic::class)]
     private Collection $characteristics;
 
-    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Condition::class)]
+    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Condition::class, cascade: ['remove'])]
     private Collection $conditions;
 
     public function __construct()

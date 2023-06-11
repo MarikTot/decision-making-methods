@@ -11,7 +11,7 @@ class DecisionMakingMethod
     {
         return match ($name) {
             self::PARETO => 'Метод Парето',
-            self::GUARANTEED_RESULT => 'Метод гарантированого результата',
+            self::GUARANTEED_RESULT => 'Метод гарантированного результата',
             default => $name,
         };
     }

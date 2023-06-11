@@ -46,7 +46,7 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
     /**
      * 2. "нормализуем ее" на основе макс мин
      */
-    public function normalize(Task $task): array
+    private function normalize(Task $task): array
     {
         $charTypeMap = [];
         /** @var Condition $condition */
@@ -74,11 +74,11 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
 
             foreach ($characteristicValues as $alternativeId => $value) {
                 // fixme: пофиксить для нуля
-                $tmpValue = $value / $kmax;
-
                 $type = $charTypeMap[$characteristicId] ?? ConditionType::MIN;
                 if ($type === ConditionType::MIN) {
                     $tmpValue = $kmin / $value;
+                } else {
+                    $tmpValue = $value / $kmax;
                 }
 
                 $newMatrixArr[$alternativeId][$characteristicId] = $tmpValue;
