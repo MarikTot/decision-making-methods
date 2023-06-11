@@ -73,12 +73,11 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
             $kmin = min($characteristicValues);
 
             foreach ($characteristicValues as $alternativeId => $value) {
-                // fixme: пофиксить для нуля
                 $type = $charTypeMap[$characteristicId] ?? ConditionType::MIN;
                 if ($type === ConditionType::MIN) {
-                    $tmpValue = $kmin / $value;
+                    $tmpValue = $kmin === $value ? 1 : $kmin / $value;
                 } else {
-                    $tmpValue = $value / $kmax;
+                    $tmpValue = $kmax === $value ? 1 : $value / $kmax;
                 }
 
                 $newMatrixArr[$alternativeId][$characteristicId] = $tmpValue;
