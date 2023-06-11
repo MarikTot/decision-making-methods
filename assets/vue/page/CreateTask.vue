@@ -88,7 +88,12 @@ export default {
       })
         .then((response) => response.json())
         .then((response) => {
-          alert('Таска создана епт');
+          if (response.data.isError) {
+            alert('Произошла ошибка');
+          } else {
+            window.location.replace(response.data.url);
+          }
+
         })
         .catch(() => {
           alert('Произошла ошибка');

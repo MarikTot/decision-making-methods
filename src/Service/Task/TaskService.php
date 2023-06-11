@@ -55,6 +55,9 @@ class TaskService
         }
 
         foreach ($dto->getConditions() as $conditionData) {
+            if (false === isset($characteristicMap[$conditionData['id']])) {
+                continue;
+            }
             $condition = new Condition();
 
             $condition->setType($conditionData['condition']);
