@@ -10,6 +10,10 @@ use App\Enum\DecisionMakingMethod;
 
 class GuaranteedResultStrategy implements SolverStrategyInterface
 {
+    private array $alternativeMap = [];
+    private array $characteristicMap = [];
+    private array $charTypeMap = [];
+
     public static function getName(): string
     {
         return DecisionMakingMethod::GUARANTEED_RESULT;
@@ -17,9 +21,16 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
 
     public function solve(Task $task): array
     {
-        $alternativeMap = [];
         foreach ($task->getAlternatives() as $alternative) {
-            $alternativeMap[$alternative->getId()] = $alternative;
+            $this->alternativeMap[$alternative->getId()] = $alternative;
+        }
+        foreach ($task->getCharacteristics() as $characteristic) {
+            $this->characteristicMap[$characteristic->getId()] = $characteristic;
+        }
+
+        /** @var Condition $condition */
+        foreach ($task->getConditions() as $condition) {
+            $this->charTypeMap[$condition->getCharacteristic()->getId()] = $condition->getType();
         }
 
         $matrixArr = $this->normalize($task);
@@ -31,10 +42,15 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
 
         $result = [];
         foreach ($matrixArr as $alternativeId => $data) {
+            $normalizeData = [];
+            foreach ($data as $characteristicId => $value) {
+                $normalizeData[$this->characteristicMap[$characteristicId]->getName()] = $value;
+            }
             $result[] = [
                 'alternativeId' => $alternativeId,
-                'name' => $alternativeMap[$alternativeId]->getName(),
+                'name' => $this->alternativeMap[$alternativeId]->getName(),
                 'value' => min($data),
+                'normalizeData' => $normalizeData,
             ];
         }
 
@@ -48,12 +64,6 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
      */
     private function normalize(Task $task): array
     {
-        $charTypeMap = [];
-        /** @var Condition $condition */
-        foreach ($task->getConditions() as $condition) {
-            $charTypeMap[$condition->getCharacteristic()->getId()] = $condition->getType();
-        }
-
         $matrixArr = [];
         /** @var Cell $cell */
         foreach ($task->getMatrix()->getCells() as $cell) {
@@ -73,7 +83,7 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
             $kmin = min($characteristicValues);
 
             foreach ($characteristicValues as $alternativeId => $value) {
-                $type = $charTypeMap[$characteristicId] ?? ConditionType::MIN;
+                $type = $this->charTypeMap[$characteristicId] ?? ConditionType::MIN;
                 if ($type === ConditionType::MIN) {
                     $tmpValue = $kmin === $value ? 1 : $kmin / $value;
                 } else {
