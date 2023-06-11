@@ -27,10 +27,10 @@ class AdminAuditSubscriber implements EventSubscriberInterface
     {
         $entity = $args->getObject();
 
-        if ($entity instanceof AuditableInterface) {
-            /** @var User $user */
-            $user = $this->security->getUser();
+        /** @var User $user */
+        $user = $this->security->getUser();
 
+        if ($entity instanceof AuditableInterface && null !== $user) {
             $entity->setCreatedBy($user);
         }
     }
