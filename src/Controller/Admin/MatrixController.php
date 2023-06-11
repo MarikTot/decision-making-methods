@@ -47,23 +47,6 @@ class MatrixController extends AbstractController
         ;
 
         return $this->redirect($url);
-//        $matrixData = [];
-//        $matrix->getCells()
-//        /** @var Alternative $alternative */
-//        foreach ($matrix->getAlternatives()->toArray() as $alternative) {
-//            $columns = [];
-//            /** @var Characteristic $characteristic */
-//            foreach ($matrix->getCharacteristics()->toArray() as $characteristic) {
-//                $columns[] = [
-//                    'name' => $characteristic->getName(),
-//                    'value' => $characteristic->getName(),
-//                ];
-//            }
-//            $matrixData[] = [
-//                'name' => $alternative->getName(),
-//                'columns' => $columns,
-//            ];
-//        }
     }
 
     #[Route('/edit', 'edit')]

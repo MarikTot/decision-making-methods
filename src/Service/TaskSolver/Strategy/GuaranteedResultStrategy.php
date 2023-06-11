@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Service\MatrixSolver\Strategy;
+namespace App\Service\TaskSolver\Strategy;
 
-use App\Entity\Matrix;
 use App\Entity\Cell;
 use App\Entity\Condition;
+use App\Entity\Task;
+use App\Enum\ConditionType;
 use App\Enum\DecisionMakingMethod;
 
 class GuaranteedResultStrategy implements SolverStrategyInterface
@@ -14,14 +15,15 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
         return DecisionMakingMethod::GUARANTEED_RESULT;
     }
 
-    public function solve(Matrix $matrix): array
+    public function solve(Task $task): array
     {
         $alternativeMap = [];
-        foreach ($matrix->getAlternatives() as $alternative) {
+        foreach ($task->getAlternatives() as $alternative) {
             $alternativeMap[$alternative->getId()] = $alternative;
         }
 
-        $matrixArr = $this->normalize($matrix);
+        $matrixArr = $this->normalize($task);
+
         /**
          * 3. находим худшее значение по каждой
          * 4. располагам по убыванию
@@ -44,18 +46,24 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
     /**
      * 2. "нормализуем ее" на основе макс мин
      */
-    public function normalize(Matrix $matrix): array
+    public function normalize(Task $task): array
     {
         $charTypeMap = [];
         /** @var Condition $condition */
-        foreach ($matrix->getConditions() as $condition) {
+        foreach ($task->getConditions() as $condition) {
             $charTypeMap[$condition->getCharacteristic()->getId()] = $condition->getType();
         }
 
         $matrixArr = [];
         /** @var Cell $cell */
-        foreach ($matrix->getCells() as $cell) {
-            // todo: переделать на множественное число потом
+        foreach ($task->getMatrix()->getCells() as $cell) {
+            if (
+                false === $task->getAlternatives()->contains($cell->getAlternative())
+                || false === $task->getCharacteristics()->contains($cell->getCharacteristic())
+            ) {
+                continue;
+            }
+            // не может быть несколько значений
             $matrixArr[$cell->getCharacteristic()->getId()][$cell->getAlternative()->getId()] = $cell->getValues()->first()->getValue();
         }
 
@@ -65,10 +73,11 @@ class GuaranteedResultStrategy implements SolverStrategyInterface
             $kmin = min($characteristicValues);
 
             foreach ($characteristicValues as $alternativeId => $value) {
+                // fixme: пофиксить для нуля
                 $tmpValue = $value / $kmax;
 
-                $type = $charTypeMap[$characteristicId] ?? 'min';
-                if ($type === 'min') {
+                $type = $charTypeMap[$characteristicId] ?? ConditionType::MIN;
+                if ($type === ConditionType::MIN) {
                     $tmpValue = $kmin / $value;
                 }
 

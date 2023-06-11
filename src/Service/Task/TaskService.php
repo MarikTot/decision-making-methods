@@ -3,6 +3,7 @@
 namespace App\Service\Task;
 
 use App\Dto\TaskDataDto;
+use App\Entity\Condition;
 use App\Entity\Task;
 use App\Repository\AlternativeRepository;
 use App\Repository\CharacteristicRepository;
@@ -46,6 +47,22 @@ class TaskService
         }
 
         $task->setMatrix($matrix);
+
+        // todo отрефачить надо ))
+        $characteristicMap = [];
+        foreach ($characteristics as $characteristic) {
+            $characteristicMap[$characteristic->getId()] = $characteristic;
+        }
+
+        foreach ($dto->getConditions() as $conditionData) {
+            $condition = new Condition();
+
+            $condition->setType($conditionData['condition']);
+            $condition->setCharacteristic($characteristicMap[$conditionData['id']]);
+            $condition->setTask($task);
+
+            $this->em->persist($condition);
+        }
 
         $this->em->persist($task);
         $this->em->flush();

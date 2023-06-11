@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Service\MatrixSolver\Factory;
+namespace App\Service\TaskSolver\Factory;
 
-use App\Service\MatrixSolver\Strategy\GuaranteedResultStrategy;
-use App\Service\MatrixSolver\Strategy\SolverStrategyInterface;
+use App\Service\TaskSolver\Strategy\GuaranteedResultStrategy;
+use App\Service\TaskSolver\Strategy\SolverStrategyInterface;
 
 class SolverStrategyFactory
 {

@@ -22,7 +22,7 @@
     <filter-matrix @filterMatrix="filterMatrix" :matrix="matrix"></filter-matrix>
     <br>
 
-    <displaying-matrix @selectCharacteristics="selectCharacteristics" :matrix="rmatrix" :showCheckboxes="true"></displaying-matrix>
+    <displaying-matrix @changeConditions="changeConditions" @selectCharacteristics="selectCharacteristics" :matrix="rmatrix" :showCheckboxes="true"></displaying-matrix>
     <br>
     <div class="d-flex justify-content-end">
       <button :disabled="buttonIsDisabled" @click="createTask" class="btn btn-success">Создать</button>
@@ -48,6 +48,7 @@ export default {
       'description': '',
       'rmatrix': this.matrix,
       'characteristicIds': [],
+      'conditions': [],
       'isProcessed': false,
     };
   },
@@ -64,6 +65,10 @@ export default {
     {
       this.characteristicIds = ids;
     },
+    changeConditions(conditions)
+    {
+      this.conditions = conditions;
+    },
     createTask() {
       this.isProcessed = true;
       let alternativeIds = Object.keys(this.rmatrix.table).map(key => this.rmatrix.table[key][Object.keys(this.rmatrix.table[key])[0]].alternative.id);
@@ -78,6 +83,7 @@ export default {
           'description': this.description,
           'alternativeIds': alternativeIds,
           'characteristicIds': this.characteristicIds,
+          'conditions': this.conditions,
         }),
       })
         .then((response) => response.json())

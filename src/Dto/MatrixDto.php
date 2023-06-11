@@ -76,26 +76,12 @@ class MatrixDto
 
     private function getFilteredAlternatives(): ReadableCollection
     {
-        $alternatives = $this->matrix->getAlternatives();
-
-        if (null !== $this->task) {
-            $alternatives = $alternatives
-                ->filter(fn(Alternative $alternative) => $this->task->getAlternatives()->contains($alternative));
-        }
-
-        return $alternatives;
+        return null !== $this->task ? $this->task->getAlternatives() : $this->matrix->getAlternatives();
     }
 
     private function getFilteredCharacteristics(): ReadableCollection
     {
-        $characteristics = $this->matrix->getCharacteristics();
-
-        if (null !== $this->task) {
-            $characteristics = $characteristics
-                ->filter(fn(Characteristic $characteristic) => $this->task->getCharacteristics()->contains($characteristic));
-        }
-
-        return $characteristics;
+        return null !== $this->task ? $this->task->getCharacteristics() : $this->matrix->getCharacteristics();
     }
 
     public function toArray(): array

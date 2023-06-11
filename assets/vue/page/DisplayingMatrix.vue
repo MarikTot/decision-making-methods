@@ -28,6 +28,19 @@
           {{ cell.value }}
         </td>
       </tr>
+      <tr v-if="this.showCheckboxes">
+        <th></th>
+        <th class="text-nowrap" v-for="characteristic in rmatrix.characteristics">
+          <select
+              @change="conditionChange($event, characteristic)"
+              v-if="showCheckbox(characteristic)"
+              class="form-select form-select-sm"
+          >
+            <option value="min">min</option>
+            <option value="max">max</option>
+          </select>
+        </th>
+      </tr>
       </tbody>
     </table>
   </div>
@@ -39,6 +52,12 @@ export default {
   props: ['matrix', 'showCheckboxes'],
   data() {
     return {
+      'conditions': this.matrix.characteristics.filter((characteristic) => this.showCheckbox(characteristic)).map((characteristic) => {
+        return {
+          'id': characteristic.id,
+          'condition': 'min',
+        };
+      }),
       'selectedOptions': this.matrix.characteristics.filter((characteristic) => this.showCheckbox(characteristic)).map((characteristic) => characteristic.id),
       'rmatrix': this.matrix,
     };
@@ -46,6 +65,7 @@ export default {
   name: 'displaying-matrix',
   mounted() {
     this.changeSelectedOptions();
+    this.$emit('changeConditions', this.conditions);
   },
   methods: {
     changeSelectedOptions() {
@@ -53,6 +73,16 @@ export default {
     },
     showCheckbox(characteristic) {
       return this.showCheckboxes && characteristic.multiple === false && characteristic.type.isNumber === true;
+    },
+    conditionChange(event, characteristic) {
+      this.conditions = this.conditions.map((condition) => {
+        if (condition.id === characteristic.id) {
+          condition.condition = event.target.value;
+        }
+        return condition;
+      });
+
+      this.$emit('changeConditions', this.conditions);
     },
   },
 }

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Task;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @extends ServiceEntityRepository<Task>
@@ -63,4 +64,14 @@ class TaskRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findOrThrow(int $taskId): Task
+    {
+        $task = $this->find($taskId);
+
+        if ($task === null) {
+            throw new \RuntimeException('not found task');
+        }
+
+        return $task;
+    }
 }

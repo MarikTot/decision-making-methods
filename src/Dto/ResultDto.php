@@ -10,15 +10,15 @@ class ResultDto
     private array $result;
     private string $createdAt;
     private string $createdBy;
-    private string $method;
+    private MethodDto $method;
 
     public function __construct(Result $decision)
     {
         $this->id = $decision->getId();
         $this->result = $decision->getResult();
-        $this->createdAt = $decision->getCreatedAt()->format('Y-m-d H:i:s');
+        $this->createdAt = $decision->getCreatedAt()->format('H:i d.m.Y');
         $this->createdBy = $decision->getCreatedBy()->getUsername();
-        $this->method = $decision->getMethod();
+        $this->method = new MethodDto($decision->getMethod());
     }
 
     public function toArray(): array
@@ -28,7 +28,7 @@ class ResultDto
             'result' => $this->result,
             'createdAt' => $this->createdAt,
             'createdBy' => $this->createdBy,
-            'method' => $this->method,
+            'method' => $this->method->toArray(),
         ];
     }
 }

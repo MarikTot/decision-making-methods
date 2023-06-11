@@ -10,6 +10,7 @@ class TaskDataDto
         private string $description,
         private array $alternativeIds,
         private array $characteristicIds,
+        private array $conditions,
     ) {
     }
 
@@ -61,5 +62,15 @@ class TaskDataDto
     public function setCharacteristicIds(array $characteristicIds): void
     {
         $this->characteristicIds = $characteristicIds;
+    }
+
+    public function getConditions(): array
+    {
+        return $this->conditions;
+    }
+
+    public function setConditions(array $conditions): void
+    {
+        $this->conditions = $conditions;
     }
 }
