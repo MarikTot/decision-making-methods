@@ -3,10 +3,12 @@
 namespace App\Fixtures;
 
 use App\Entity\Matrix;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class MatrixFixtures extends Fixture
+class MatrixFixtures extends Fixture implements DependentFixtureInterface
 {
     public const REF_MATRIX_BPLA = 'ref_matrix_bpla';
 
@@ -16,6 +18,11 @@ class MatrixFixtures extends Fixture
             $matrix = new Matrix();
 
             $matrix->setTitle($data['title']);
+
+            /** @var User $user */
+            $user = $this->getReference($data['createdBy']);
+
+            $matrix->setCreatedBy($user);
 
             $this->addReference($data['reference'], $matrix);
 
@@ -31,7 +38,15 @@ class MatrixFixtures extends Fixture
             [
                 'reference' => self::REF_MATRIX_BPLA,
                 'title' => 'БПЛА',
+                'createdBy' => UserFixtures::REF_USER_ADMIN,
             ],
+        ];
+    }
+
+    public function getDependencies()
+    {
+        return [
+            UserFixtures::class,
         ];
     }
 }

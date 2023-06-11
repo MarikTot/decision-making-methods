@@ -17,7 +17,7 @@
 
 {% block wrapper_wrapper %}
     {% set page_title = block('page_title') %}
-    {% set _username_label = 'Username' %}
+    {% set _username_label = 'Логин' %}
     {% set _password_label = 'Пароль' %}
     {% set _forgot_password_label = forgot_password_label is defined ? forgot_password_label|trans : 'login_page.forgot_password'|trans({}, 'EasyAdminBundle') %}
     {% set _remember_me_label = remember_me_label is defined ? remember_me_label|trans : 'login_page.remember_me'|trans({}, 'EasyAdminBundle') %}
@@ -25,9 +25,8 @@
 
     {% include '@EasyAdmin/flash_messages.html.twig' %}
 
-
         <div class="d-flex w-100 h-100 align-items-center justify-content-center">
-            <div class="bg-light p-5 w-50">
+            <div class="bg-light p-5">
                 <h1 class="text-center mb-2">Авторизация</h1>
 
                     {% if error|default(false) %}
@@ -74,10 +73,10 @@
                     </div>
                 </form>
 
-                <div class="text-center text-muted mt-5">
-                    Еще не зарегистрированы?
-                    <a href="/register" class="fw-bold text-body"><u>Зарегистрироваться</u></a>
-                </div>
+{#                <div class="text-center text-muted mt-5">#}
+{#                    Еще не зарегистрированы?#}
+{#                    <a href="/register" class="fw-bold text-body"><u>Зарегистрироваться</u></a>#}
+{#                </div>#}
 
                 <script src="{{ asset('login.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
             </div>

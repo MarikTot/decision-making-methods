@@ -63,7 +63,7 @@ export default {
         }
       }
 
-      this.createTaskIsAvailable = isAvailable;
+      this.createTaskIsAvailable = isAvailable && Object.keys(this.next).length !== 0;
     },
     changeCell() {
       this.checkCreateTaskIsAvailable();

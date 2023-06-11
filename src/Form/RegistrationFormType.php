@@ -25,6 +25,7 @@ class RegistrationFormType extends AbstractType
                 'row_attr' => [
                     'class' => 'form-group',
                 ],
+                'label' => 'Логин',
             ])
 //            ->add('agreeTerms', CheckboxType::class, [
 //                'mapped' => false,

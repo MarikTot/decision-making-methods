@@ -12,6 +12,7 @@ use App\Entity\Type;
 use App\Entity\Matrix;
 use App\Entity\Task;
 use App\Enum\ConditionType;
+use App\Enum\UserRole;
 use App\Repository\AlternativeRepository;
 use App\Repository\CharacteristicRepository;
 use App\Repository\TypeRepository;
@@ -21,8 +22,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use function Monolog\toArray;
 
+#[IsGranted(UserRole::USER)]
 #[Route('/matrix', 'matrix_')]
 class MatrixController extends AbstractController
 {

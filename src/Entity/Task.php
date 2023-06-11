@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'tasks')]
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
-class Task
+class Task implements AuditableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -37,6 +37,10 @@ class Task
 
     #[ORM\OneToMany(mappedBy: 'task', targetEntity: Condition::class, cascade: ['remove'])]
     private Collection $conditions;
+
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $createdBy;
 
     public function __construct()
     {
@@ -196,6 +200,18 @@ class Task
                 $condition->setTask(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedBy(): User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(User $createdBy): self
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }

@@ -1,0 +1,53 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}{{ title|default('Личный кабинет') }}{% endblock %}
+
+{% block main %}
+    <div>
+        <div>
+            Задачи
+            <ul>
+                {% for task in user.tasks.toArray %}
+                    <li>
+                        <a href="{{
+                        ea_url()
+                            .setController('App\\Controller\\Admin\\TaskCrudController')
+                            .setAction('detail')
+                            .setEntityId(task.id)
+                        }}">{{ task.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            Матрицы
+            <ul>
+                {% for matrix in user.matrices.toArray %}
+                    <li>
+                        <a href="{{
+                            ea_url()
+                                .setController('App\\Controller\\Admin\\MatrixCrudController')
+                                .setAction('fillMatrix')
+                                .setEntityId(matrix.id)
+                        }}">{{ matrix.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            Решения
+            <ul>
+                {% for result in user.results.toArray %}
+                    <li>
+                        <a href="{{
+                        ea_url()
+                            .setController('App\\Controller\\Admin\\TaskCrudController')
+                            .setAction('detail')
+                            .setEntityId(result.task.id)
+                        }}">Задача {{ result.task.title }} - {{ result.method }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

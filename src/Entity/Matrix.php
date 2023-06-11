@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[UniqueEntity(fields: ['title'])]
 #[ORM\Index(columns: ['title'], name: 'matrix_title_idx')]
 #[ORM\Entity(repositoryClass: MatrixRepository::class)]
-class Matrix
+class Matrix implements AuditableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -37,6 +37,10 @@ class Matrix
 
     #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: Task::class)]
     private Collection $tasks;
+
+    #[ORM\ManyToOne(inversedBy: 'matrices')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $createdBy;
 
     public function __construct()
     {
@@ -197,5 +201,17 @@ class Matrix
     public function allowToEdit(): bool
     {
         return $this->getTasks()->count() === 0;
+    }
+
+    public function getCreatedBy(): User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(User $createdBy): self
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
     }
 }

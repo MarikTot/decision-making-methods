@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="row">
+    <div v-if="canCreate" class="row">
       <div class="col-lg-6">
         <make-decision-select @createResult="onCreateResult" :taskId="rtask.id" :methods="methods" />
       </div>
@@ -21,7 +21,7 @@ import MakeDecisionSelect from "./MakeDecisionSelect";
 import ResultItem from "../components/ResultItem";
 
 export default {
-  props: ['task', 'methods'],
+  props: ['task', 'methods', 'canCreate'],
   name: 'result',
   components: {
     MakeDecisionSelect,

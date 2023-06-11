@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,6 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Regex('/^\w+$/')]
     #[ORM\Column(length: 180, unique: true)]
     private string $username;
 
@@ -34,9 +36,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Result::class)]
     private Collection $results;
 
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Task::class)]
+    private Collection $tasks;
+
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Matrix::class)]
+    private Collection $matrices;
+
     public function __construct()
     {
         $this->results = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
+        $this->matrices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -63,7 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        return (string) $this->getId();
     }
 
     /**
@@ -149,6 +159,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($result->getCreatedBy() === $this) {
                 $result->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->removeElement($task)) {
+            // set the owning side to null (unless already changed)
+            if ($task->getCreatedBy() === $this) {
+                $task->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Matrix>
+     */
+    public function getMatrices(): Collection
+    {
+        return $this->matrices;
+    }
+
+    public function addMatrix(Matrix $matrix): self
+    {
+        if (!$this->matrices->contains($matrix)) {
+            $this->matrices->add($matrix);
+            $matrix->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMatrix(Matrix $matrix): self
+    {
+        if ($this->matrices->removeElement($matrix)) {
+            // set the owning side to null (unless already changed)
+            if ($matrix->getCreatedBy() === $this) {
+                $matrix->setCreatedBy(null);
             }
         }
 

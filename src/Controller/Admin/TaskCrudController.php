@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(UserRole::USER)]
@@ -24,7 +25,9 @@ class TaskCrudController extends BaseCrudController
 {
     public function __construct(
         private AdminUrlGenerator $adminUrlGenerator,
+        private Security $security,
     ) {
+        parent::__construct($this->security);
     }
 
     public static function getEntityFqcn(): string
@@ -55,6 +58,9 @@ class TaskCrudController extends BaseCrudController
         $actions->remove(Crud::PAGE_INDEX, Action::EDIT);
         $actions->remove(Crud::PAGE_INDEX, Action::NEW);
         $actions->remove(Crud::PAGE_DETAIL, Action::EDIT);
+        $actions->update(Crud::PAGE_INDEX, Action::DETAIL, function (Action $action) {
+            return $action->displayIf(fn(Task $task) => true);
+        });
 
         return $actions;
     }
@@ -66,12 +72,16 @@ class TaskCrudController extends BaseCrudController
 
         $taskDto = new TaskDto($task);
 
+        $canCreateResult = $context->getUser()->getUserIdentifier() === $task->getCreatedBy()->getUserIdentifier()
+            || in_array(UserRole::ADMIN, $context->getUser()->getRoles());
+
         return $this->render('admin/page/task-detail.html.twig', [
             'ea' => $context,
             'task' => $taskDto->toArray(),
             'resultData' => [
                 'task' => $taskDto->toArray(),
                 'methods' => DecisionMakingMethod::getList(),
+                'canCreate' => $canCreateResult,
             ],
             'originalMatrixData' => [
                 'matrix' => $taskDto->getOriginalMatrix()->toArray(),

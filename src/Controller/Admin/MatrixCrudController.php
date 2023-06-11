@@ -5,33 +5,31 @@ namespace App\Controller\Admin;
 use App\Dto\MatrixDataDto;
 use App\Dto\MatrixDto;
 use App\Entity\Matrix;
-use App\Entity\Task;
-use App\Entity\User;
+use App\Enum\UserRole;
 use App\Form\MatrixCreateForm;
-use App\Form\RegistrationFormType;
-use App\Repository\AlternativeRepository;
-use App\Repository\CharacteristicRepository;
 use App\Service\Matrix\MatrixService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted(UserRole::USER)]
 class MatrixCrudController extends BaseCrudController
 {
     public function __construct(
         private AdminUrlGenerator $urlGenerator,
+        private Security $security,
     ) {
+        parent::__construct($security);
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -65,12 +63,12 @@ class MatrixCrudController extends BaseCrudController
             })
             ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
                 return $action->linkToCrudAction('saveMatrix')
-                    ->displayIf(fn (Matrix $matrix) => $matrix->allowToEdit())
+                    ->displayIf(fn (Matrix $matrix) => $matrix->allowToEdit() && $matrix->getCreatedBy()->getUserIdentifier() === $this->security->getUser()->getUserIdentifier())
                 ;
             })
             ->update(Crud::PAGE_DETAIL, Action::EDIT, function (Action $action) {
                 return $action->linkToCrudAction('saveMatrix')
-                    ->displayIf(fn (Matrix $matrix) => $matrix->allowToEdit())
+                    ->displayIf(fn (Matrix $matrix) => $matrix->allowToEdit() && $matrix->getCreatedBy()->getUserIdentifier() === $this->security->getUser()->getUserIdentifier())
                 ;
             })
         ;
@@ -98,6 +96,13 @@ class MatrixCrudController extends BaseCrudController
         /** @var Matrix $matrix */
         $matrix = $context->getEntity()->getInstance();
 
+        if (
+            $context->getUser()->getUserIdentifier() !== $matrix->getCreatedBy()->getUserIdentifier()
+            && false === in_array(UserRole::ADMIN, $context->getUser()->getRoles())
+        ) {
+            throw $this->createAccessDeniedException();
+        }
+
         $dto = new MatrixDto($matrix);
 
         return $this->render('admin/page/create-task.html.twig', [
@@ -117,19 +122,28 @@ class MatrixCrudController extends BaseCrudController
 
         $dto = new MatrixDto($matrix);
 
+        $next = [];
+
+        if (
+            $context->getUser()->getUserIdentifier() === $matrix->getCreatedBy()->getUserIdentifier()
+            || in_array(UserRole::ADMIN, $context->getUser()->getRoles())
+        ) {
+            $next = [
+                'url' => $this->urlGenerator
+                    ->setController(MatrixCrudController::class)
+                    ->setAction('createTask')
+                    ->setEntityId($matrix->getId())
+                    ->generateUrl(),
+                'label' => 'Создать задачу',
+            ];
+        }
+
         return $this->render('admin/page/fill-matrix.html.twig', [
             'title' => sprintf('Данные матрицы "%s"', $matrix),
             'data' => [
                 'matrix' => $dto->toArray(),
                 'allowEdit' => $matrix->allowToEdit(),
-                'next' => [
-                    'url' => $this->urlGenerator
-                        ->setController(MatrixCrudController::class)
-                        ->setAction('createTask')
-                        ->setEntityId($matrix->getId())
-                        ->generateUrl(),
-                    'label' => 'Создать задачу',
-                ],
+                'next' => $next,
             ],
         ]);
     }

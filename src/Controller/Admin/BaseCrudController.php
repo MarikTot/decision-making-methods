@@ -2,16 +2,27 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\AuditableInterface;
+use App\Enum\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted(UserRole::USER)]
 abstract class BaseCrudController extends AbstractCrudController
 {
+    public function __construct(
+        private Security $security,
+    ) {
+    }
+
     public function configureActions(Actions $actions): Actions
     {
-        return $actions
+        $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action
@@ -80,5 +91,28 @@ abstract class BaseCrudController extends AbstractCrudController
                 ;
             })
         ;
+
+        $actionsArr = [];
+        foreach ($actions->getAsDto(null)->getActions() as $page => $pageActions) {
+            /** @var ActionDto $actionObj */
+            foreach ($pageActions as $action => $actionObj) {
+                $actionsArr[$page][] = $action;
+                $security = $this->security ?? null;
+                $actions->update($page, $action, function (Action $action) use ($security) {
+                    return $action->displayIf(function ($entity) use ($security) {
+                        if (
+                            $entity instanceof AuditableInterface
+                            && false === in_array(UserRole::ADMIN, $security->getUser()->getRoles())
+                            && $entity->getCreatedBy()->getUserIdentifier() !== $security->getUser()->getUserIdentifier()
+                        ) {
+                            return false;
+                        }
+                        return true;
+                    });
+                });
+            }
+        }
+
+        return $actions;
     }
 }

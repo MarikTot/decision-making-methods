@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'results')]
 #[ORM\Entity(repositoryClass: ResultRepository::class)]
-class Result
+class Result implements AuditableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

@@ -4,13 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\Alternative;
 use App\Entity\Characteristic;
-use App\Entity\MatrixAlternative;
-use App\Entity\MatrixCharacteristic;
 use App\Entity\Type;
 use App\Entity\TypeEnum;
 use App\Entity\Matrix;
-use App\Entity\Cell;
-use App\Entity\MatrixValue;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Enum\UserRole;
@@ -18,12 +14,18 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class DashboardController extends AbstractDashboardController
 {
+    public function __construct(
+        private AdminUrlGenerator $adminUrlGenerator,
+    ) {
+    }
+
     #[Route('/', name: 'admin')]
     public function index(): Response
     {
@@ -39,8 +41,19 @@ class DashboardController extends AbstractDashboardController
 
     public function configureUserMenu(UserInterface $user): UserMenu
     {
+        $profileUrl = $this->adminUrlGenerator
+            ->setController(UserCrudController::class)
+            ->setAction('profile')
+            ->setEntityId($user->getUserIdentifier())
+            ->generateUrl()
+        ;
         return parent::configureUserMenu($user)
+            ->setName($user->getUsername())
             ->setMenuItems([
+                MenuItem::linkToUrl(
+                    'Личный кабинет',
+                    'fa fa-user', $profileUrl,
+                ),
                 MenuItem::linkToUrl(
                     'Выйти',
                     'fa fa-arrow-right-from-bracket', $this->generateUrl('app_logout'),
@@ -51,7 +64,7 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToDashboard('Главная', 'fa fa-home');
+        yield MenuItem::linkToDashboard('Методы принятия решений', 'fa fa-home');
 
         yield MenuItem::section('Основное', 'fa fa-list')
             ->setPermission(UserRole::ADMIN)

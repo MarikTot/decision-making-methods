@@ -10,10 +10,7 @@ use App\Entity\MatrixAlternative;
 use App\Entity\Cell;
 use App\Entity\Value;
 use App\Entity\MatrixCharacteristic;
-use App\Repository\AlternativeRepository;
-use App\Repository\CharacteristicRepository;
 use App\Repository\CellRepository;
-use App\Repository\ValueRepository;
 use App\Repository\MatrixRepository;
 use App\Service\Matrix\Exception\AlternativeAlreadyExistsException;
 use App\Service\Matrix\Exception\CharacteristicAlreadyExistsException;
@@ -25,10 +22,7 @@ class MatrixService
 {
     public function __construct(
         private MatrixRepository $matrices,
-        private AlternativeRepository $alternatives,
-        private CharacteristicRepository $characteristics,
         private CellRepository $cells,
-        private ValueRepository $values,
         private EntityManagerInterface $em,
     ) {
     }
