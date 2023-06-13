@@ -1,7 +1,7 @@
 <template>
   <div>
     <h6>Ответ:</h6>
-    Нормализованная таблица:
+    Нормализованная сокращенная матрица
     <table class="table table-bordered">
       <thead>
       <tr>
@@ -18,10 +18,18 @@
     </table>
     Результат:
     <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Min оценка</th>
+        <th>Рейтинг альтернатив</th>
+      </tr>
+      </thead>
       <tbody>
-      <tr v-for="resultItem in result">
+      <tr v-for="(resultItem, key) in result">
         <th>{{ resultItem.name }}</th>
         <td>{{ Math.trunc( resultItem.value * 1000 ) / 1000 }}</td>
+        <td>{{ key + 1 }}</td>
       </tr>
       </tbody>
     </table>

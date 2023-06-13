@@ -47,7 +47,7 @@ class UserCrudController extends BaseCrudController
                     'Пользователь' => UserRole::USER,
 //                    'Студент' => UserRole::STUDENT,
 //                    'Преподаватель' => UserRole::TEACHER,
-                    'Админ' => UserRole::ADMIN,
+                    'Администратор' => UserRole::ADMIN,
                 ])
                 ->allowMultipleChoices()
                 ->renderAsBadges()
