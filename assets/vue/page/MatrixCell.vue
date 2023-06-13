@@ -12,7 +12,7 @@
       <small class="text-center text-muted">Укажите значения через запятую</small>
     </div>
     <div v-else-if="this.rcell.characteristic.type.name === 'Число'">
-      <input @change="saveValue" class="form-control" type="number" :value="formatValue">
+      <input @change="saveValue" min="0" step="1" class="form-control" type="number" :value="formatValue">
     </div>
     <div v-else>
       <input @change="saveValue" class="form-control" type="text" :value="formatValue">
@@ -37,6 +37,10 @@ export default {
   methods: {
     saveValue(event) {
       let value = event.target.value;
+      if (this.rcell.characteristic.type.name === 'Число') {
+        value = parseInt(value);
+      }
+
       this.rcell.value = value;
 
       this.$emit('changeCell', value);
