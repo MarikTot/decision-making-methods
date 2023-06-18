@@ -48,7 +48,7 @@ class DashboardController extends AbstractDashboardController
             ->generateUrl()
         ;
         return parent::configureUserMenu($user)
-            ->setName($user->getUsername())
+            ->setName((string) $user)
             ->setMenuItems([
                 MenuItem::linkToUrl(
                     'Личный кабинет',

@@ -17,7 +17,7 @@ class ResultDto
         $this->id = $decision->getId();
         $this->result = $decision->getResult();
         $this->createdAt = $decision->getCreatedAt()->format('H:i d.m.Y');
-        $this->createdBy = $decision->getCreatedBy()->getUsername();
+        $this->createdBy = (string) $decision->getCreatedBy();
         $this->method = new MethodDto($decision->getMethod());
     }
 

@@ -42,27 +42,47 @@ class UserCrudController extends BaseCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('username', 'Логин'),
+            TextField::new('password')
+                ->setFormType(RepeatedType::class)
+                ->setFormTypeOptions([
+                    'type' => PasswordType::class,
+                    'first_options' => [
+                        'label' => 'Пароль',
+                        'attr' => [
+                            'min' => 8,
+                            'max' => 100,
+                        ],
+                        'row_attr' => [
+                            'class' => 'col-md-5 col-xxl-5',
+                            'style' => 'padding-right: calc(var(--bs-gutter-x)*.5)',
+                        ],
+                    ],
+                    'second_options' => [
+                        'label' => 'Повторите пароль',
+                        'attr' => [
+                            'min' => 8,
+                            'max' => 100,
+                        ],
+                        'row_attr' => [
+                            'class' => 'col-md-5 col-xxl-5',
+                            'style' => 'padding-right: calc(var(--bs-gutter-x)*.5)',
+                        ],
+                    ],
+                    'mapped' => false,
+                ])
+                ->setRequired($pageName === Crud::PAGE_NEW)
+                ->onlyOnForms(),
+            TextField::new('firstname', 'Имя'),
+            TextField::new('lastname', 'Фамилия'),
             ChoiceField::new('roles', 'Роли')
                 ->setChoices([
                     'Пользователь' => UserRole::USER,
-//                    'Студент' => UserRole::STUDENT,
-//                    'Преподаватель' => UserRole::TEACHER,
                     'Администратор' => UserRole::ADMIN,
                 ])
                 ->allowMultipleChoices()
                 ->renderAsBadges()
                 ->autocomplete()
             ,
-            TextField::new('password')
-                ->setFormType(RepeatedType::class)
-                ->setFormTypeOptions([
-                    'type' => PasswordType::class,
-                    'first_options' => ['label' => 'Пароль'],
-                    'second_options' => ['label' => 'Повторите пароль'],
-                    'mapped' => false,
-                ])
-                ->setRequired($pageName === Crud::PAGE_NEW)
-                ->onlyOnForms()
         ];
     }
 

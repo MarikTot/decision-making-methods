@@ -23,6 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Length(min: 4, max: 180)]
     #[Assert\Regex('/^\w+$/')]
     #[ORM\Column(length: 180, unique: true)]
     private string $username;
@@ -41,6 +42,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Matrix::class)]
     private Collection $matrices;
+
+    #[Assert\Length(min: 2, max: 180)]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $firstname = null;
+
+    #[Assert\Length(min: 2, max: 180)]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lastname = null;
 
     public function __construct()
     {
@@ -223,5 +232,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(?string $firstname): self
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(?string $lastname): self
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        $fullName = sprintf('%s %s', $this->getFirstname(), $this->getLastname());
+        $fullName = trim($fullName);
+
+        return $fullName ?: $this->getUsername();
     }
 }
