@@ -4,6 +4,8 @@ namespace App\Fixtures;
 
 use App\Entity\Characteristic;
 use App\Entity\Type;
+use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -25,6 +27,12 @@ class CharacteristicFixtures extends Fixture implements DependentFixtureInterfac
             $characteristic->setName($data['name']);
             $characteristic->setMultiple($data['multiple']);
             $characteristic->setType($type);
+            $characteristic->setCreatedAt(new DateTimeImmutable());
+
+            /** @var User $user */
+            $user = $this->getReference($data['createdBy']);
+
+            $characteristic->setCreatedBy($user);
 
             $this->addReference($data['reference'], $characteristic);
 
@@ -42,18 +50,21 @@ class CharacteristicFixtures extends Fixture implements DependentFixtureInterfac
                 'name' => 'Масса полезной нагрузки, кг',
                 'type' => CharacteristicTypeFixtures::REF_TYPE_INT,
                 'multiple' => false,
+                'createdBy' => UserFixtures::REF_USER_ADMIN,
             ],
             [
                 'reference' => self::REF_AIRSPEED,
                 'name' => 'Скорость  полета, км/ч',
                 'type' => CharacteristicTypeFixtures::REF_TYPE_INT,
                 'multiple' => false,
+                'createdBy' => UserFixtures::REF_USER_ADMIN,
             ],
             [
                 'reference' => self::REF_FLIGHT_ALTITUDE,
                 'name' => 'Минимальная высота полета, м',
                 'type' => CharacteristicTypeFixtures::REF_TYPE_INT,
                 'multiple' => false,
+                'createdBy' => UserFixtures::REF_USER_ADMIN,
             ],
         ];
     }
@@ -62,6 +73,7 @@ class CharacteristicFixtures extends Fixture implements DependentFixtureInterfac
     {
         return [
             CharacteristicTypeFixtures::class,
+            UserFixtures::class,
         ];
     }
 }

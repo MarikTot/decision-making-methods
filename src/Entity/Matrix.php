@@ -16,6 +16,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: MatrixRepository::class)]
 class Matrix implements AuditableInterface
 {
+    use AuditableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -25,22 +27,22 @@ class Matrix implements AuditableInterface
     private string $title;
 
     #[ORM\OrderBy(['id' => SortOrder::ASC])]
-    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixAlternative::class)]
+    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixAlternative::class, cascade: ['remove'])]
     private Collection $matrixAlternative;
 
     #[ORM\OrderBy(['id' => SortOrder::ASC])]
-    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixCharacteristic::class)]
+    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: MatrixCharacteristic::class, cascade: ['remove'])]
     private Collection $matrixCharacteristic;
 
-    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: Cell::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: Cell::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $cells;
 
-    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: Task::class)]
+    #[ORM\OneToMany(mappedBy: 'matrix', targetEntity: Task::class, cascade: ['remove'])]
     private Collection $tasks;
 
     #[ORM\ManyToOne(inversedBy: 'matrices')]
-    #[ORM\JoinColumn(nullable: false)]
-    private User $createdBy;
+    #[ORM\JoinColumn(name: 'created_by', nullable: false)]
+    private ?User $createdBy = null;
 
     public function __construct()
     {
@@ -201,17 +203,5 @@ class Matrix implements AuditableInterface
     public function allowToEdit(): bool
     {
         return $this->getTasks()->count() === 0;
-    }
-
-    public function getCreatedBy(): User
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(User $createdBy): self
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
     }
 }

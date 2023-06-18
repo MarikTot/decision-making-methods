@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\AlternativeRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -11,9 +10,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Index(columns: ['name'], name: 'alternative_name_idx')]
 #[ORM\Table(name: 'alternatives')]
 #[ORM\Entity(repositoryClass: AlternativeRepository::class)]
-#[ORM\HasLifecycleCallbacks]
-class Alternative
+class Alternative implements AuditableInterface
 {
+    use AuditableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -21,9 +21,6 @@ class Alternative
 
     #[ORM\Column(length: 255)]
     private string $name;
-
-    #[ORM\Column]
-    private ?DateTimeImmutable $createdAt = null;
 
     public function getId(): int
     {
@@ -47,24 +44,6 @@ class Alternative
         $this->name = $name;
 
         return $this;
-    }
-
-    public function getCreatedAt(): ?DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    #[ORM\PrePersist]
-    public function onSave(): void
-    {
-        $this->setCreatedAt(new DateTimeImmutable());
     }
 
     public function __toString(): string

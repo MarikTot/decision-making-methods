@@ -3,24 +3,22 @@
 namespace App\Entity;
 
 use App\Repository\ResultRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'results')]
 #[ORM\Entity(repositoryClass: ResultRepository::class)]
 class Result implements AuditableInterface
 {
+    use AuditableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column]
-    private DateTimeImmutable $createdAt;
-
     #[ORM\ManyToOne(inversedBy: 'results')]
-    #[ORM\JoinColumn(nullable: false)]
-    private User $createdBy;
+    #[ORM\JoinColumn(name: 'created_by', nullable: false)]
+    private ?User $createdBy = null;
 
     #[ORM\Column(length: 255)]
     private string $method;
@@ -35,30 +33,6 @@ class Result implements AuditableInterface
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getCreatedBy(): User
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(User $createdBy): self
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
     }
 
     public function getMethod(): string

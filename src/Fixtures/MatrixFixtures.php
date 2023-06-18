@@ -4,6 +4,7 @@ namespace App\Fixtures;
 
 use App\Entity\Matrix;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -18,6 +19,8 @@ class MatrixFixtures extends Fixture implements DependentFixtureInterface
             $matrix = new Matrix();
 
             $matrix->setTitle($data['title']);
+
+            $matrix->setCreatedAt(new DateTimeImmutable());
 
             /** @var User $user */
             $user = $this->getReference($data['createdBy']);

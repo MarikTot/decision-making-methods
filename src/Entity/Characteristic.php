@@ -10,8 +10,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Index(columns: ['name'], name: 'characteristic_name_idx')]
 #[ORM\Table(name: 'characteristics')]
 #[ORM\Entity(repositoryClass: CharacteristicRepository::class)]
-class Characteristic
+class Characteristic implements AuditableInterface
 {
+    use AuditableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -43,7 +43,7 @@ class Cell
     #[ORM\JoinColumn(nullable: false)]
     private Matrix $matrix;
 
-    #[ORM\OneToMany(mappedBy: 'cell', targetEntity: Value::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'cell', targetEntity: Value::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $values;
 
     public function __construct()

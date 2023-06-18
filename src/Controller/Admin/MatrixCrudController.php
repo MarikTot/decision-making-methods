@@ -142,7 +142,7 @@ class MatrixCrudController extends BaseCrudController
             'title' => sprintf('Данные матрицы "%s"', $matrix),
             'data' => [
                 'matrix' => $dto->toArray(),
-                'allowEdit' => $matrix->allowToEdit(),
+                'allowEdit' => $matrix->allowToEdit() && $matrix->getCreatedBy()->getUserIdentifier() === $this->security->getUser()->getUserIdentifier(),
                 'next' => $next,
             ],
         ]);

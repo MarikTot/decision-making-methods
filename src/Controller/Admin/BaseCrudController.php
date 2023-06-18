@@ -102,6 +102,7 @@ abstract class BaseCrudController extends AbstractCrudController
                     return $action->displayIf(function ($entity) use ($security) {
                         if (
                             $entity instanceof AuditableInterface
+                            && null !== $entity->getCreatedBy()
                             && false === in_array(UserRole::ADMIN, $security->getUser()->getRoles())
                             && $entity->getCreatedBy()->getUserIdentifier() !== $security->getUser()->getUserIdentifier()
                         ) {

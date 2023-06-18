@@ -7,8 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'type_enums')]
 #[ORM\Entity(repositoryClass: TypeEnumRepository::class)]
-class TypeEnum
+class TypeEnum implements AuditableInterface
 {
+    use AuditableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -10,8 +10,10 @@ use phpDocumentor\Reflection\Types\Boolean;
 
 #[ORM\Table(name: 'types')]
 #[ORM\Entity(repositoryClass: TypeRepository::class)]
-class Type
+class Type implements AuditableInterface
 {
+    use AuditableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

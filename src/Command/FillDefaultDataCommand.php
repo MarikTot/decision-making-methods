@@ -6,8 +6,11 @@ use App\Entity\Type;
 use App\Entity\TypeEnum;
 use App\Entity\User;
 use App\Enum\UserRole;
+use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,6 +28,7 @@ class FillDefaultDataCommand extends Command
     public function __construct(
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $userPasswordHasher,
+        private UserRepository $users,
     ){
         parent::__construct();
     }
@@ -32,8 +36,8 @@ class FillDefaultDataCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
-            $this->fillTypesData($output);
             $this->fillUsersData($output);
+            $this->fillTypesData($output);
             return Command::SUCCESS;
         } catch (Exception $e) {
             $output->writeln($e->getMessage());
@@ -43,6 +47,12 @@ class FillDefaultDataCommand extends Command
 
     private function fillTypesData(OutputInterface $output): void
     {
+        $user = $this->users->findOneBy(['username' => 'admin']);
+
+        if (null === $user) {
+            throw new RuntimeException('Cant find user "admin"');
+        }
+
         $data = [
             [
                 'name' => 'Число',
@@ -75,6 +85,8 @@ class FillDefaultDataCommand extends Command
             $type->setName($defaultType['name']);
             $type->setDefaultType(true);
             $type->setIsNumber($defaultType['isNumber'] ?? false);
+            $type->setCreatedAt(new DateTimeImmutable());
+            $type->setCreatedBy($user);
 
             $output->writeln('Добавлен новый тип ' . $type->getName());
 
@@ -86,6 +98,8 @@ class FillDefaultDataCommand extends Command
 
                     $typeEnum->setValue($enum);
                     $typeEnum->setType($type);
+                    $typeEnum->setCreatedAt(new DateTimeImmutable());
+                    $typeEnum->setCreatedBy($user);
 
                     $this->em->persist($typeEnum);
                 }
