@@ -20,7 +20,7 @@ class ParetoStrategy implements SolverStrategyInterface
     public function solve(Task $task): array
     {
         $this->task = $task;
-        $matrixArr = $this->getMatrix($task);
+        $matrixArr = $this->getMatrix();
 
         $alternativeMap = [];
         foreach ($task->getAlternatives() as $alternative) {
